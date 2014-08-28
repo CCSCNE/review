@@ -44,4 +44,6 @@ return array(
 
 	),
 
+    'default' => 'sqlite',
+
 );
