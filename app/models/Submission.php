@@ -6,4 +6,8 @@ class Submission extends Eloquent {
     public function user() {
         return $this->belongsTo('User');
     }
+
+    public function files() {
+        return $this->morphMany('File', 'attached_to');
+    }
 }
