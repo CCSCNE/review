@@ -10,6 +10,9 @@
   <body>
     <div class="row">
       <div class="large-12 columns">
+          @if(Auth::check())
+            <div class="right">{{ Auth::user()->email }}</div>
+          @endif
           <h1>@yield('title')</h1>
       </div>
     </div>

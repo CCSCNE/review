@@ -1,6 +1,6 @@
 <?php
 
-class SubmissionController extends \BaseController {
+class SubmissionCon extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.

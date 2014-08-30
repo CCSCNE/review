@@ -13,8 +13,19 @@
 
 Route::get('/', function()
 {
-	return View::make('hello');
+	return View::make('layout');
 });
 
-Route::resource('user', 'UserController');
-Route::resource('user.submission', 'SubmissionController');
+Route::resource('user', 'UserCon');
+Route::resource('keyword', 'KeywordCon');
+Route::resource('submission', 'SubmissionCon');
+Route::resource('conference', 'ConferenceCon');
+Route::resource('cetegory', 'CategoryCon');
+Route::resource('review', 'ReviewCon');
+Route::resource('document', 'DocumentCon');
+
+Route::get('login', 'UserCon@getLogin');
+Route::post('login', 'UserCon@postLogin');
+Route::get('logout', 'UserCon@getLogout');
+Route::get('signup', 'UserCon@getSignup');
+Route::post('signup', 'UserCon@postSignup');
