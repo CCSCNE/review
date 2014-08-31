@@ -63,7 +63,16 @@ class SubmissionCon extends \BaseController {
         $submission = new Submission(Input::all());
         $submission->user_id = Input::get('user_id');
         $submission->category_id = Input::get('category_id');
+
+        $keywords = Keyword::whereIn('id', Input::get('keywords'))->get();
+
+        $kws = array();
+        foreach($keywords as $kw) {
+            $kws[] = $kw;
+        }
+
         $submission->save();
+        $submission->keywords()->saveMany($kws);
 
         return Redirect::route('submission.show',
             array('submission_id' => $submission->id)

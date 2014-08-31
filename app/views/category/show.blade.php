@@ -6,11 +6,17 @@ Category: {{{ $category->name }}}
 @stop
 
 @section('content')
-ID: {{ $category->id }}<br>
-Name: {{{ $category->name }}}<br>
-Keywords:<br>
+<h3>ID</h3>
+{{ $category->id }}
+
+<h3>Name</h3>
+{{{ $category->name }}}
+
+<h3>Keywords<h3>
+<ul>
 @foreach($category->keywords as $keyword)
-<div>{{{$keyword->keyword}}}</div>
+<li>{{{$keyword->keyword}}}</li>
 @endforeach
+</ul>
 
 @stop
