@@ -8,7 +8,7 @@
 {{ Form::open($action) }}
 
 {{ Form::label('email') }}
-{{ Form::email('email') }}
+{{ Form::email('email', Input::old('email')) }}
 {{ Form::error('email') }}
 
 {{ Form::label('password') }}

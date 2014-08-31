@@ -8,11 +8,11 @@
 {{ Form::open($action) }}
 
 {{ Form::label('email') }}
-{{ Form::email('email') }}
+{{ Form::email('email', Input::old('email')) }}
 {{ Form::error('email') }}
 
 {{ Form::label('email_confirmation') }}
-{{ Form::email('email_confirmation') }}
+{{ Form::email('email_confirmation', Input::old('email_confirmation')) }}
 {{ Form::error('email_confirmation') }}
 
 {{ Form::label('password') }}
@@ -27,6 +27,6 @@
 
 {{ Form::close() }}
 
-{{ link_to('signup', 'Sign up') }}
+{{ link_to('login', 'Log in') }}
 
 @stop

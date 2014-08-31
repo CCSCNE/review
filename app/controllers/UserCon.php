@@ -121,7 +121,9 @@ class UserCon extends \BaseController {
 
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->failed()) {
-            return Redirect::to($login)->withErrors($validator);
+            return Redirect::to($login)
+                ->withErrors($validator)
+                ->withInput(Input::except('password'));
         }
 
         $creds = array(
@@ -131,9 +133,12 @@ class UserCon extends \BaseController {
 
         if (Auth::attempt($creds)) {
             $users_home = route('user.show', array(Auth::user()->id));
-            return Redirect::intended($users_home);
+            return Redirect::intended($users_home)
+                ->with('success', 'You have logged in successfully');
         } else {
-            return Redirect::to($login);
+            return Redirect::to($login)
+                ->withErrors(array('password'=>'Password invalid'))
+                ->withInput(Input::except('password'));
         }
     }
 
@@ -147,8 +152,8 @@ class UserCon extends \BaseController {
 
     public function getSignup()
     {
-        $signup = Request::path();
-        return View::make('user.signup')->withAction(array('url' => $signup));
+        $action = array('url' => Request::path());
+        return View::make('user.signup')->withAction($action);
     }
     
     
@@ -164,7 +169,9 @@ class UserCon extends \BaseController {
     
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
-            return Redirect::to($signup)->withErrors($validator);
+            return Redirect::to($signup)
+                ->withErrors($validator)
+                ->withInput(Input::except('password', 'password_confirmation'));
         }
     
         $user = new User(Input::all());

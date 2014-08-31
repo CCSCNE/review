@@ -13,7 +13,7 @@
 
 Route::get('/', function()
 {
-	return View::make('layout');
+	return View::make('home');
 });
 
 Route::resource('user', 'UserCon');
