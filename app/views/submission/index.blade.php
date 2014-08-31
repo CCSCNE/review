@@ -1,11 +1,11 @@
 @extends('layout')
 
 @section('title')
-Submissions of {{{ $user->email }}}
+Submissions
 @stop
 
 @section('content')
-    <ul>@foreach($user->submissions as $submission)
-        <li><a href="{{URL::route('user.submission.show', array($submission->user_id, $submission->id))}}">{{{$submission->title}}}</a></li>
+    <ul>@foreach($submissions as $submission)
+        <li><a href="{{URL::route('submission.show', array($submission->id))}}">{{{$submission->title}}}</a></li>
     @endforeach</ul>
 @stop

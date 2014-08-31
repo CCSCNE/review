@@ -22,6 +22,7 @@ class UserCon extends \BaseController {
 	 */
 	public function create()
 	{
+        return 'hi';
         $user = new User(Input::all());
         return View::make('user.create')->withUser($user);
 	}
