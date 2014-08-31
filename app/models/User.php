@@ -28,4 +28,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     public function submissions() {
         return $this->hasMany('Submission');
     }
+
+    public function keywords() {
+        return $this->morphToMany('Keyword', 'keywordable')->withTimestamps();
+    }
 }

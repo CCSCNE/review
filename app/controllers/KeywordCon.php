@@ -1,6 +1,6 @@
 <?php
 
-class CategoryCon extends \BaseController {
+class KeywordCon extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.
@@ -9,8 +9,8 @@ class CategoryCon extends \BaseController {
 	 */
 	public function index()
 	{
-        $categories = Category::all();
-        return View::make('category.index')->withCategories($categories);
+        $keywords = Keyword::all();
+        return View::make('keyword.index')->withKeywords($keywords);
 	}
 
 
@@ -21,8 +21,8 @@ class CategoryCon extends \BaseController {
 	 */
 	public function create()
 	{
-        $action = array('route' => 'category.store');
-        return View::make('category.create')->withAction($action);
+        $action = array('route' => array('keyword.store'));
+        return View::make('keyword.create')->withAction($action);
 	}
 
 
@@ -33,29 +33,26 @@ class CategoryCon extends \BaseController {
 	 */
 	public function store()
 	{
-        $rules = array(
-            'name' => 'required|min:1',
+        $data = array(
+            'keyword' => Input::get('keyword'),
         );
 
-        $validator = Validator::make(Input::all(), $rules);
+        $rules = array(
+            'keyword' => array('required', 'regex:/[a-zA-Z0-9 -_]+/', 'unique:keywords'),
+        );
+
+        $validator = Validator::make($data, $rules);
+
         if ($validator->fails()) {
-            return Redirect::route('category.create')
+            return Redirect::route('keyword.create')
                 ->withErrors($validator)
-                ->withInput(Input::all());
+                ->withInput(Input::only('keyword'));
         }
 
-        $category = new Category(Input::all());
-        $keywords = Keyword::whereIn('id', Input::get('keywords'))->get();
+        $keyword = new Keyword(Input::only('keyword'));
+        $keyword->save();
 
-        $kws = array();
-        foreach($keywords as $kw) {
-            $kws[] = $kw;
-        }
-
-        $category->save();
-        $category->keywords()->saveMany($kws);
-
-        return Redirect::route('category.show', array($category->id));
+        return Redirect::route('keyword.index');
 	}
 
 
@@ -67,8 +64,8 @@ class CategoryCon extends \BaseController {
 	 */
 	public function show($id)
 	{
-        $category = Category::find($id);
-        return View::make('category.show')->withCategory($category);
+        $keyword = Keyword::find($id);
+        return View::make('keyword.show')->withKeyword($keyword);
 	}
 
 

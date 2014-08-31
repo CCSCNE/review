@@ -18,4 +18,8 @@ class Submission extends Eloquent {
     public function scopeBy($query, $user_id) {
         return $query->where('user_id', $user_id);
     }
+
+    public function keywords() {
+        return $this->morphToMany('Keyword', 'keywordable')->withTimestamps();
+    }
 }
