@@ -108,4 +108,31 @@ class CategoryCon extends \BaseController {
 	}
 
 
+    public function getVolunteerToReview($category_id, $user_id)
+    {
+        $action = array('action'=>array('CategoryCon@postVolunteerToReview', $category_id, $user_id));
+        $category = Category::find($category_id);
+        $user = User::find($user_id);
+        return View::make('category.volunteerToReview')
+            ->withAction($action)
+            ->withCategory($category)
+            ->withUser($user);
+    }
+
+    public function postVolunteerToReview()
+    {
+        $category = Category::find(Input::get('category_id'));
+        $user = User::find(Input::get('user_id'));
+        $keywords = Keyword::whereIn('id', Input::get('keywords'))->get();
+
+        $kws = array();
+        foreach($keywords as $kw) {
+            $kws[] = $kw->id;
+        }
+
+        $user->keywords()->sync($kws);
+        $category->reviewers()->save($user);
+
+        return Redirect::action('UserCon@show', array($user->id));
+    }
 }

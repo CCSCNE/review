@@ -11,4 +11,8 @@ class Category extends Eloquent {
     public function keywords() {
         return $this->morphToMany('Keyword', 'keywordable')->withTimestamps();
     }
+
+    public function reviewers() {
+        return $this->belongsToMany('User', 'reviewers')->withTimestamps();
+    }
 }

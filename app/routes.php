@@ -31,3 +31,6 @@ Route::post('login', 'UserCon@postLogin');
 Route::get('logout', 'UserCon@getLogout');
 Route::get('signup', 'UserCon@getSignup');
 Route::post('signup', 'UserCon@postSignup');
+
+Route::get('category/{category}/volunteer/{user}', 'CategoryCon@getVolunteerToReview');
+Route::post('category/{category}/volunteer/{user}', 'CategoryCon@postVolunteerToReview');

@@ -32,4 +32,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     public function keywords() {
         return $this->morphToMany('Keyword', 'keywordable')->withTimestamps();
     }
+
+    public function categoriesReviewing() {
+        return $this->belongsToMany('Category', 'reviewers')->withTimestamps();
+    }
 }
