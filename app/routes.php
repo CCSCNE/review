@@ -19,7 +19,8 @@ Route::get('/', function()
 Route::resource('user', 'UserCon');
 Route::resource('keyword', 'KeywordCon');
 Route::resource('submission', 'SubmissionCon');
-Route::get('category/{category}/submission/create/{user?}', 'SubmissionCon@create');
+Route::get('category/{category}/submission/create/{user?}',
+    array('as'=>'category.submission', 'uses'=>'SubmissionCon@create'));
 Route::resource('conference', 'ConferenceCon');
 Route::resource('category', 'CategoryCon');
 Route::resource('review', 'ReviewCon');

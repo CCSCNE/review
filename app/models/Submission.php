@@ -14,4 +14,8 @@ class Submission extends Eloquent {
     public function category() {
         return $this->belongsTo('Category');
     }
+
+    public function scopeBy($query, $user_id) {
+        return $query->where('user_id', $user_id);
+    }
 }

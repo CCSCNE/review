@@ -55,15 +55,18 @@ class UserCon extends \BaseController {
 
 
 	/**
-	 * Display the specified resource.
-	 *
+     * User's home page.
+     *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function show($id)
 	{
         $user = User::find($id);
-        return View::make('user.show')->withUser($user);
+        $categories = Category::all();
+        return View::make('user.show')
+            ->withUser($user)
+            ->withCategories($categories);
 	}
 
 
