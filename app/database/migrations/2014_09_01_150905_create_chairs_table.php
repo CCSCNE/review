@@ -16,9 +16,12 @@ class CreateChairsTable extends Migration {
 		{
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
+
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('categories');
+
             $table->primary(array('user_id', 'category_id'));
+
 			$table->timestamps();
 		});
 	}

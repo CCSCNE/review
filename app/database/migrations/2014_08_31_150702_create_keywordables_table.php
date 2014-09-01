@@ -15,8 +15,9 @@ class CreateKeywordablesTable extends Migration {
 		Schema::create('keywordables', function(Blueprint $table)
 		{
             $table->integer('keyword_id')->unsigned();
-            $table->integer('keywordable_id')->unsigned();
-            $table->string('keywordable_type');
+            $table->foreign('keyword_id')->references('id')->on('keyword');
+            $table->morphs('keywordable');
+            $table->primary(array('keyword_id', 'keywordable_id', 'keywordable_type'));
 			$table->timestamps();
 		});
 	}
