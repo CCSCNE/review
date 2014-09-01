@@ -37,3 +37,6 @@ Route::get('category/{category}/volunteer/{user}', 'CategoryCon@getVolunteerToRe
 Route::post('category/{category}/volunteer/{user}', 'CategoryCon@postVolunteerToReview');
 
 Route::get('download/{document}', 'DocumentCon@download');
+
+Route::get('chair/assignments/{category}', 'ChairCon@getAssignments');
+Route::post('chair/assignments', 'CategoryCon@postAssignments');
