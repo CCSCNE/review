@@ -22,4 +22,8 @@ class Submission extends Eloquent {
     public function keywords() {
         return $this->morphToMany('Keyword', 'keywordable')->withTimestamps();
     }
+
+    public function reviews() {
+        return $this->hasMany('Review');
+    }
 }
