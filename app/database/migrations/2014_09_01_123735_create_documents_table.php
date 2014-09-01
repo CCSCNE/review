@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFilesTable extends Migration {
+class CreateDocumentsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreateFilesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('files', function(Blueprint $table)
+		Schema::create('documents', function(Blueprint $table)
 		{
 			$table->increments('id');
             $table->string('name');
@@ -21,7 +21,7 @@ class CreateFilesTable extends Migration {
             $table->boolean('author_can_read')->default(false);
             $table->boolean('reviewer_can_read')->default(false);
             $table->boolean('all_can_read')->default(false);
-            $table->morphs('attached_to');
+            $table->morphs('container');
             $table->integer('user_id')->unsigned();
 			$table->timestamps();
             $table->softDeletes();
@@ -35,7 +35,7 @@ class CreateFilesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('files');
+		Schema::drop('documents');
 	}
 
 }

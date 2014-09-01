@@ -5,7 +5,7 @@
 @stop
 
 @section('content')
-{{ Form::open($action) }}
+{{ Form::open(array_merge($action, array('files'=>true))) }}
 {{ Form::label('title') }}
 {{ Form::text('title') }}
 {{ Form::error('title') }}
@@ -23,6 +23,8 @@
     {{ Form::label("keywords[{$keyword->id}]", $keyword->keyword) }}
 </div>
 @endforeach
+{{ Form::label('document') }}
+{{ Form::file('document') }}
 {{ Form::submit('Submit') }}
 {{ Form::close() }}
 @stop

@@ -15,4 +15,10 @@ Submittor: {{{ $submission->user->email }}}
     <li>{{{$keyword->keyword}}}</li>
     @endforeach
 </ul>
+<h3>Files</h3>
+<ul>
+    @foreach($submission->documents as $document)
+    <li>{{link_to_action('DocumentCon@download', e($document->name), array($document->id))}}</li>
+    @endforeach
+</ul>
 @stop

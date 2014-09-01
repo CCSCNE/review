@@ -1,6 +1,6 @@
 <?php
 
-class FileCon extends \BaseController {
+class DocumentCon extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.
@@ -118,5 +118,11 @@ class FileCon extends \BaseController {
 		//
 	}
 
+
+    public function download($document_id)
+    {
+        $document = Document::find($document_id);
+        return Response::download('uploads/'.$document->saved_name, $document->name);
+    }
 
 }

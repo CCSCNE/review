@@ -34,3 +34,5 @@ Route::post('signup', 'UserCon@postSignup');
 
 Route::get('category/{category}/volunteer/{user}', 'CategoryCon@getVolunteerToReview');
 Route::post('category/{category}/volunteer/{user}', 'CategoryCon@postVolunteerToReview');
+
+Route::get('download/{document}', 'DocumentCon@download');

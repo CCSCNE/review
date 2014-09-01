@@ -15,4 +15,8 @@ class Category extends Eloquent {
     public function reviewers() {
         return $this->belongsToMany('User', 'reviewers')->withTimestamps();
     }
+
+    public function documents() {
+        return $this->morphMany('Document', 'container_id');
+    }
 }

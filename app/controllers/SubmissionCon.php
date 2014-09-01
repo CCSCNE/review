@@ -48,6 +48,7 @@ class SubmissionCon extends \BaseController {
             'title' => 'required|min:1',
             'user_id' => 'required|exists:users,id',
             'category_id' => 'required|exists:categories,id',
+            'document' => 'required|max:10000000|min:1|mimes:pdf,doc,docx',
         );
 
         $validator = Validator::make(Input::all(), $rules);
@@ -71,8 +72,27 @@ class SubmissionCon extends \BaseController {
             $kws[] = $kw;
         }
 
+        $file = Input::file('document');
+        $document = new Document;
+        $document->author_can_read = true;
+        $document->user_id = Input::get('user_id');
+
+        // Sanitize
+        $name = $file->getClientOriginalName();
+        $name = pathinfo($name)['filename'];
+        $name = trim($name);
+        $name = preg_replace('/[^a-zA-Z0-9]+/', '_', $name);
+        $name = ltrim($name, '_');
+        $name = "$name." . $file->getClientOriginalExtension();
+        $document->name = $name;
+        $document->saved_name = uniqid() . '/' . $document->name;
+
+        $file->move('uploads/'.dirname($document->saved_name), basename($document->saved_name));
+
         $submission->save();
         $submission->keywords()->saveMany($kws);
+        $document->container()->associate($submission);
+        $document->save();
 
         return Redirect::route('submission.show',
             array('submission_id' => $submission->id)

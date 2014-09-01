@@ -7,8 +7,8 @@ class Submission extends Eloquent {
         return $this->belongsTo('User');
     }
 
-    public function files() {
-        return $this->morphMany('File', 'attached_to');
+    public function documents() {
+        return $this->morphMany('Document', 'container');
     }
 
     public function category() {
