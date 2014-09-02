@@ -19,14 +19,17 @@
     @endforeach
 
 <h2>Reviewership</h2>
+
 <h3>Keywords</h3>
 <ul>
-@foreach($user->keywords as $keyword)
-    <li>{{{ $keyword->keyword }}}</li>
+    @foreach($user->keywords as $keyword)
+        <li>{{{ $keyword->keyword }}}</li>
     @endforeach
 </ul>
 
+
 @foreach($categories as $category)
+
     <h3>{{{ $category->name }}}</h3>
     {{ $user->categoriesReviewing->contains($category->id)
         ? 'You are a reviewer for this category'
@@ -34,5 +37,15 @@
             'CategoryCon@getVolunteerToReview',
             'Volunteer to review for this category',
             array($category->id,  $user->id)) }}
+
+    <h4>Review Assignments</h4>
+    @foreach($user->reviews as $review)
+        @if($review->submission->category->id == $category->id)
+            <div>id{{$review->submission->id}}: {{{$review->submission->title}}}</div>
+        @endif
     @endforeach
+
+@endforeach
+
+
 @stop
