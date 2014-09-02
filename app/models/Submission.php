@@ -1,6 +1,9 @@
 <?php
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
 class Submission extends Eloquent {
+    use SoftDeletingTrait;
+    protected $dates = ['deleted_at'];
     protected $fillable = array('title', 'user_id');
 
     public function user() {
@@ -25,5 +28,9 @@ class Submission extends Eloquent {
 
     public function reviews() {
         return $this->hasMany('Review');
+    }
+
+    public function reviewers() {
+        return $this->belongsToMany('User', 'reviews')->withTimestamps();
     }
 }

@@ -1,6 +1,10 @@
 <?php
 
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
+
 class Category extends Eloquent {
+    use SoftDeletingTrait;
+    protected $dates = ['deleted_at'];
 	protected $table = 'categories';
     protected $fillable = array('name');
 

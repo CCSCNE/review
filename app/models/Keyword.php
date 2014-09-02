@@ -1,7 +1,11 @@
 <?php
 
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
+
 class Keyword extends Eloquent {
 
+    use SoftDeletingTrait;
+    protected $dates = ['deleted_at'];
     protected $fillable = ['keyword'];
 
     public function submissions() {
