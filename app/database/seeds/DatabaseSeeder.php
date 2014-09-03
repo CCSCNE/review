@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder {
         $this->call('ChairTableSeeder');
         $this->call('ReviewerTableSeeder');
         $this->call('ReviewTableSeeder');
+        $this->call('DocumentTableSeeder');
 
         // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}
