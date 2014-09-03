@@ -4,29 +4,47 @@ class KeywordableTableSeeder extends Seeder {
 
     public function run()
     {
-        $table = 'keywordables';
-        DB::table($table)->truncate();
+        $faker = Faker\Factory::create();
+        DB::table('keywordables')->truncate();
 
-        $entries = array(
-            array(1, 1),
-            array(1, 2),
-            array(1, 3),
-            array(1, 4),
-            array(1, 5),
-            array(2, 1),
-            array(2, 2),
-            array(2, 3),
-            array(2, 4),
-            array(2, 5),
-            array(3, 1),
-            array(3, 3),
-            array(3, 5),
-            array(4, 2),
-            array(4, 4),
-        );
+        $users = User::all()->count();
+        $categories = Category::all()->count();
+        $submissions = Submission::all()->count();
+        $keywords = Keyword::all()->count();
 
-        foreach($entries as $entry) {
-            Category::find($entry[0])->keywords()->save(Keyword::find($entry[1]));
+        for ($category = 1; $category <= $categories; $category++)
+        {
+            for ($i = 1; $i <= $keywords; $i++)
+            {
+                Category::find($category)->keywords()->save(Keyword::find($i));
+            }
+        }
+
+        $keyword_ids = array();
+        for ($i = 1; $i <= $keywords; $i++) {
+            $keyword_ids[] = $i;
+        }
+
+        for ($i = 1; $i <= $submissions; $i++) {
+            $kids = $keyword_ids;
+            for ($j = 0; $j < 3; $j++) {
+                $random = rand(0, count($kids)-1);
+                $kid = $kids[$random];
+                unset($kids[$random]);
+                $kids = array_values($kids);
+                Submission::find($i)->keywords()->save(Keyword::find($kid));
+            }
+        }
+        
+        for ($i = 1; $i <= $users; $i++) {
+            $kids = $keyword_ids;
+            for ($j = 0; $j < 3; $j++) {
+                $random = rand(0, count($kids)-1);
+                $kid = $kids[$random];
+                unset($kids[$random]);
+                $kids = array_values($kids);
+                User::find($i)->keywords()->save(Keyword::find($kid));
+            }
         }
     }
 

@@ -4,17 +4,25 @@ class ReviewerTableSeeder extends Seeder {
 
     public function run()
     {
-        $table = 'reviewers';
-        DB::table($table)->truncate();
+        DB::table('reviewers')->truncate();
 
-        $category = Category::find(1);
-        for($i=7; $i<15; $i++) {
-            User::find($i)->categoriesReviewing()->save($category);
+        $categories = Category::all()->count();
+        $users = User::all()->count();
+
+        $cat_ids = array();
+        for($i=1; $i <= $categories; $i++) {
+            $cat_ids[] = $i;
         }
 
-        $category = Category::find(2);
-        for($i=10; $i<19; $i++) {
-            User::find($i)->categoriesReviewing()->save($category);
+        for($user = 1; $user <= $users; $user++) {
+            $cids = $cat_ids;
+            for ($i = 0; $i < 2; $i++) {
+                $random = rand(0, count($cids)-1);
+                $cat = $cids[$random];
+                unset($cids[$random]);
+                $cids = array_values($cids);
+                Category::find($cat)->reviewers()->save(User::find($user));
+            }
         }
     }
 

@@ -4,22 +4,10 @@ class CategoryTableSeeder extends Seeder {
 
     public function run()
     {
-        $table = 'categories';
-
-        DB::table($table)->truncate();
-
-        $entries = array(
-            array('Papers'),
-            array('Posters'),
-            array('Tutorials'),
-            array('Workshops'),
-            array('Panels'),
-        );
-
-        $data = array();
-        foreach($entries as $entry) {
-            Category::create(array('name' => $entry[0]));
-        }
+        DB::table('categories')->truncate();
+        Category::create(array('name' => 'Papers'));
+        Category::create(array('name' => 'Posters'));
+        Category::create(array('name' => 'Workshops'));
     }
 
 }

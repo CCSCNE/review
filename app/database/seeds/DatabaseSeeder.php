@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder {
         $this->call('KeywordableTableSeeder');
         $this->call('ChairTableSeeder');
         $this->call('ReviewerTableSeeder');
+        $this->call('ReviewTableSeeder');
 
         // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}

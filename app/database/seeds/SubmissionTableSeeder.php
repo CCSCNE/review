@@ -4,23 +4,20 @@ class SubmissionTableSeeder extends Seeder {
 
     public function run()
     {
-        $table = 'submissions';
-        DB::table($table)->truncate();
+        $faker = Faker\Factory::create();
+        DB::table('submissions')->truncate();
 
-        $entries = array(
-            array(3, 1, 'Title One'),
-            array(3, 2, 'Title Two'),
-            array(2, 1, 'Title Three'),
-            array(2, 1, 'Title Four'),
-            array(2, 3, 'Title Five'),
-        );
-
-        $data = array();
-        foreach($entries as $entry) {
+        $users = User::all()->count();
+        $categories = Category::all()->count();
+        for ($i = 0; $i < 30; $i++) {
+            $user = rand(1, $users);
+            $category = rand(1, $categories);
+            $title = $faker->sentence(5);
+            $title = ucwords(substr($title, 0, strlen($title)-1));
             Submission::create(array(
-                'user_id' => $entry[0],
-                'category_id' => $entry[1],
-                'title' => $entry[2],
+                'user_id' => $user,
+                'category_id' => $category,
+                'title' => $title
             ));
         }
     }
