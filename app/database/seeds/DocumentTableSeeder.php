@@ -2,6 +2,35 @@
 
 class DocumentTableSeeder extends Seeder {
 
+    private $faker;
+
+    public function run()
+    {
+        $this->faker = Faker\Factory::create();
+        DB::table('documents')->truncate();
+
+        self::delUploads();
+
+        // Categories
+        foreach(Category::all() as $cat)
+        {
+            $this->genDocument($cat, 'Category');
+        }
+
+        // Submissions
+        foreach(Submission::all() as $cat)
+        {
+            $this->genDocument($cat, 'Submission');
+        }
+
+        // Reviews
+        foreach(Review::all() as $cat)
+        {
+            $this->genDocument($cat, 'Review');
+        }
+
+    }
+
     public static function delUploads()
     {
         $dir = __DIR__ . '/../../../uploads';
@@ -23,55 +52,33 @@ class DocumentTableSeeder extends Seeder {
         return rmdir($dir);
     }
 
-    public function run()
+    public function genDocument($container, $container_type)
     {
-        $faker = Faker\Factory::create();
-        DB::table('documents')->truncate();
-
-        self::delUploads();
-
-        // Categories
-        foreach(Category::all() as $cat)
-        {
-            $document = new Document;
-            $src = realpath(__DIR__ . '/../samples_files/');
-            $dest = realpath(__DIR__ . '/../../../uploads/');
-            $document->saved_name = $faker->file($src, $dest);
-            $document->name = str_replace('.', '_', str_replace(' ', '_', $faker->sentence(3)));
-            $document->container_id = $cat->id;
-            $document->container_type = 'categories';
-            $document->user_id = 1;
-            $document->save();
-        }
-
-        // Submissions
-        foreach(Submission::all() as $cat)
-        {
-            $document = new Document;
-            $src = realpath(__DIR__ . '/../samples_files/');
-            $dest = realpath(__DIR__ . '/../../../uploads/');
-            $document->saved_name = $faker->file($src, $dest);
-            $document->name = str_replace('.', '_', str_replace(' ', '_', $faker->sentence(3)));
-            $document->container_id = $cat->id;
-            $document->container_type = 'submissions';
-            $document->user_id = 1;
-            $document->save();
-        }
-
-        // Reviews
-        foreach(Review::all() as $cat)
-        {
-            $document = new Document;
-            $src = realpath(__DIR__ . '/../samples_files/');
-            $dest = realpath(__DIR__ . '/../../../uploads/');
-            $document->saved_name = $faker->file($src, $dest);
-            $document->name = str_replace('.', '_', str_replace(' ', '_', $faker->sentence(3)));
-            $document->container_id = $cat->id;
-            $document->container_type = 'reviews';
-            $document->user_id = 1;
-            $document->save();
-        }
-
+        $document = new Document;
+        $src = realpath(__DIR__ . '/../samples_files/');
+        $dest = realpath(__DIR__ . '/../../../uploads/');
+        $document->saved_name = $this->faker->file($src, $dest);
+        $document->saved_name = $this->relativePath(realpath($dest), $document->saved_name);
+        $filename = $this->faker->sentence(3);
+        $filename = substr($filename, 0, strlen($filename)-1);
+        $filename = str_replace(' ', '_', $filename);
+        $filename = str_replace('.', '_', $filename);
+        $document->name = $filename . '.' . pathinfo($document->saved_name, PATHINFO_EXTENSION);
+        $document->container_id = $container->id;
+        $document->container_type = $container_type;
+        $document->user_id = 1;
+        $document->save();
     }
 
+    function relativePath($from, $to, $ps = DIRECTORY_SEPARATOR)
+    {
+        $arFrom = explode($ps, rtrim($from, $ps));
+        $arTo = explode($ps, rtrim($to, $ps));
+        while(count($arFrom) && count($arTo) && ($arFrom[0] == $arTo[0]))
+        {
+            array_shift($arFrom);
+            array_shift($arTo);
+        }
+        return str_pad("", count($arFrom) * 3, '..'.$ps).implode($ps, $arTo);
+    }
 }

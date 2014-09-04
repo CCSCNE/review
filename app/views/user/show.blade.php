@@ -32,16 +32,23 @@
 
     <h3>{{{ $category->name }}}</h3>
     {{ $user->categoriesReviewing->contains($category->id)
-        ? 'You are a reviewer for this category'
+        ? ''
         : link_to_action(
             'CategoryCon@getVolunteerToReview',
             'Volunteer to review for this category',
             array($category->id,  $user->id)) }}
 
-    <h4>Review Assignments</h4>
     @foreach($user->reviews as $review)
         @if($review->submission->category->id == $category->id)
-            <div>id{{$review->submission->id}}: {{{$review->submission->title}}}</div>
+        <div>
+            <h4>({{$review->submission->id}})
+                {{{$review->submission->title}}}</h4>
+            <ul>
+                @foreach($review->submission->documents as $document)
+                <li>{{link_to_action('DocumentCon@download', e($document->name), array($user->id, $document->id))}}</li>
+                @endforeach
+            </ul>
+        </div>
         @endif
     @endforeach
 

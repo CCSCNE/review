@@ -49,4 +49,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     public function categoriesChairing() {
         return $this->belongsToMany('Category', 'chairs')->withTimestamps();
     }
+
+    public function documentsDownloaded() {
+        return $this->belongsToMany('Document', 'downloads')->withTimestamps();
+    }
 }

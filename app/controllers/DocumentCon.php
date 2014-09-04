@@ -119,9 +119,11 @@ class DocumentCon extends \BaseController {
 	}
 
 
-    public function download($document_id)
+    public function download($user_id, $document_id)
     {
+        $user = User::find($user_id);
         $document = Document::find($document_id);
+        $document->usersDownloaded()->attach($user->id);
         return Response::download('uploads/'.$document->saved_name, $document->name);
     }
 
