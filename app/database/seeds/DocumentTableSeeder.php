@@ -67,6 +67,8 @@ class DocumentTableSeeder extends Seeder {
         $document->container_id = $container->id;
         $document->container_type = $container_type;
         $document->user_id = 1;
+        $document->is_for_reviewers = $this->faker->boolean();
+        $document->is_for_authors = $this->faker->boolean();
         $document->save();
     }
 

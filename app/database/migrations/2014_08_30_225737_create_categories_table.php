@@ -16,6 +16,7 @@ class CreateCategoriesTable extends Migration {
 		{
 			$table->increments('id');
             $table->string('name');
+            $table->enum('status', array('closed', 'open', 'reviewing', 'finalizing', 'final'))->default('closed');
 			$table->timestamps();
             $table->softDeletes();
 		});

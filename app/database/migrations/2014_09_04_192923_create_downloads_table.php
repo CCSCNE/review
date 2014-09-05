@@ -14,9 +14,9 @@ class CreateDownloadsTable extends Migration {
 	{
 		Schema::create('downloads', function(Blueprint $table)
 		{
+            $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('document_id')->unsigned();
-            $table->primary(array('user_id', 'document_id'));
 			$table->timestamps();
 		});
 	}

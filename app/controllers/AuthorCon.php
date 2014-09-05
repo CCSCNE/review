@@ -9,7 +9,8 @@ class AuthorCon extends \BaseController
     public function __construct()
     {
         $this->beforeFilter('@loadUser');
-        $this->beforeFilter('@loadCategory', array('except'=>'showHome'));
+        $this->beforeFilter('@loadSubmission', array('except'=>array('showHome', 'create', 'save')));
+        $this->beforeFilter('@loadCategory', array('only'=>array('create', 'save')));
     }
 
 
@@ -19,10 +20,17 @@ class AuthorCon extends \BaseController
     }
 
 
+    function loadSubmission()
+    {
+        $this->data['submission'] =
+            Submission::findOrFail(Route::input('submission'));
+    }
+
+
     function loadCategory()
     {
         $this->data['category'] =
-            Category::findOrFail(Route::filter('category'));
+            Category::findOrFail(Route::input('category'));
     }
 
 
@@ -34,6 +42,7 @@ class AuthorCon extends \BaseController
 
     public function showHome()
     {
+        Session::flash('previous', Request::url());
         return $this->render('author.home');
     }
 
@@ -51,12 +60,25 @@ class AuthorCon extends \BaseController
 
     public function edit($submission_id)
     {
+        Session::flash('previous', Request::url());
         return $this->render('author.edit');
     }
 
 
     public function update($submission_id)
     {
+    }
+
+    public function saveKeywords($submission_id)
+    {
+        $submission = Submission::findOrFail($submission_id);
+        $keywords = Keyword::whereIn('id', Input::get('keywords', array()))->get();
+        $kws = array();
+        foreach($keywords as $kw) {
+            $kws[] = $kw->id;
+        }
+        $submission->keywords()->sync($kws);
+        return Redirect::to(Session::get('previous'));
     }
 
 }

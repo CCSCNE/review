@@ -5,35 +5,20 @@
 <table>
     <thead>
         <tr>
-            <th width="40">ID</th>
-            <th width="80">Category</th>
-            <th width="80">Status</th>
+            <th width="50">ID</th>
+            <th width="200">Category</th>
             <th>Title</th>
-            <th>Files</th>
-            <th width="150">Controls</th>
+            <th width="100">Status</th>
+            <th width="100">Result</th>
         </tr>
     </thead>
     @foreach($user->submissions as $submission)
     <tr>
         <td>{{{$submission->id}}}</td>
         <td>{{{$submission->category->name}}}</td>
-        <td>Open</td>
-        <td>{{{$submission->title}}}</td>
-        <td>
-            @foreach($submission->documents as $document)
-            <div><a href="#">{{{$document->name}}}</a></div>
-            @endforeach
-            @foreach($submission->reviews as $review)
-            @foreach($review->documents as $document)
-            <div><a href="#">{{{$document->name}}}</a></div>
-            @endforeach
-            @endforeach
-        </td>
-        <td>
-            <a href="#">Edit</a><br>
-            <a href="#">Upload file</a><br>
-            <a href="#">Withdraw</a><br>
-        </td>
+        <td>{{ link_to_action('AuthorCon@edit', e($submission->title), array($submission->id)) }}</td>
+        <td>{{$submission->getEffectiveStatus()}}</td>
+        <td>{{$submission->getEffectiveResult()}}</td>
     </tr>
     @endforeach
 </table>

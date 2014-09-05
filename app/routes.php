@@ -36,7 +36,8 @@ Route::get('category/{category}/submission/create/{user?}',
 Route::get('category/{category}/volunteer/{user}', 'CategoryCon@getVolunteerToReview');
 Route::post('category/{category}/volunteer/{user}', 'CategoryCon@postVolunteerToReview');
 
-Route::get('download/{user}/{document}', 'DocumentCon@download');
+Route::get('download/{document}', 'DocumentCon@download');
+Route::post('upload', 'DocumentCon@upload');
 
 Route::get('chair/assignments/{category}', 'ChairCon@getAssignments');
 Route::post('chair/assignments', 'ChairCon@postAssignments');
@@ -48,6 +49,10 @@ Route::get('author/submit', 'AuthorCon@create');
 Route::post('author/submit', 'AuthorCon@save');
 Route::get('author/{submission}', 'AuthorCon@edit');
 Route::post('author/{submission}', 'AuthorCon@update');
+Route::get('author/delete/document/{document}', 'DocumentCon@confirmDeleteDocument');
+Route::post('author/delete/document/{document}', 'DocumentCon@deleteDocument');
+Route::post('author/save/keywords/{submission}', 'AuthorCon@saveKeywords');
+
 Route::filter('author', function()
 {
     if (Auth::guest())

@@ -22,6 +22,9 @@ class CreateSubmissionsTable extends Migration {
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('categories');
 
+            $table->enum('status', array('closed', 'open', 'reviewing', 'finalizing', 'final'))->nullable();
+            $table->enum('result', array('accept', 'reject'))->nullable();
+
             $table->softDeletes();
             $table->timestamps();
         });

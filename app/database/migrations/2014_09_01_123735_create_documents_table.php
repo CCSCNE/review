@@ -15,14 +15,14 @@ class CreateDocumentsTable extends Migration {
 		Schema::create('documents', function(Blueprint $table)
 		{
 			$table->increments('id');
-            $table->string('name');
-            $table->string('saved_name');
-            $table->boolean('camera_ready')->default(false);
-            $table->boolean('author_can_read')->default(false);
-            $table->boolean('reviewer_can_read')->default(false);
-            $table->boolean('all_can_read')->default(false);
-            $table->morphs('container');
-            $table->integer('user_id')->unsigned();
+            $table->string('name')->nullable();
+            $table->string('saved_name')->nullable();
+            $table->boolean('is_for_reviewers')->default(false);
+            $table->boolean('is_for_authors')->default(false);
+            //$table->morphs('container')->nullable();
+            $table->string('container_type')->nullable();
+            $table->integer('container_id')->unsigned()->nullable();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
 			$table->timestamps();
             $table->softDeletes();
