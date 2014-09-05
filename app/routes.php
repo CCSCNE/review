@@ -40,3 +40,19 @@ Route::get('download/{user}/{document}', 'DocumentCon@download');
 
 Route::get('chair/assignments/{category}', 'ChairCon@getAssignments');
 Route::post('chair/assignments', 'ChairCon@postAssignments');
+
+
+
+Route::get('author', 'AuthorCon@showHome');
+Route::get('author/submit', 'AuthorCon@create');
+Route::post('author/submit', 'AuthorCon@save');
+Route::get('author/{submission}', 'AuthorCon@edit');
+Route::post('author/{submission}', 'AuthorCon@update');
+Route::filter('author', function()
+{
+    if (Auth::guest())
+    {
+        return Redirect::guest('login');
+    }
+});
+Route::when('author*', 'author');
