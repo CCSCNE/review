@@ -72,44 +72,9 @@ class DocumentCon extends \BaseController {
     {
         $document = Document::findOrFail($document_id);
         $user = Auth::user();
-        $container = $document->container;
 
-        $category = null;
-        if ($container instanceof Submission)
-        {
-            $category = $container->category;
-        }
-        else if ($container instanceof Category)
-        {
-            $category = $container;
-        }
-        else if ($container instanceof Review)
-        {
-            $category = $container->category;
-        }
 
-        $can_delete = false;
-        if ($user->is_chair_of($category))
-        {
-            $can_delete = true;
-        }
-        else if ($container instanceof Submission)
-        {
-            if ($user->is_author_of($container))
-            {
-                if ($container->is_status_effectively('open'))
-                {
-                    $can_delete = true;
-                }
-                else if ($container->is_status_effectively('finalizing')
-                    && Str::startsWith($document->name, 'Final'))
-                {
-                    $can_delete = true;
-                }
-            }
-        }
-
-        if ($can_delete)
+        if ($user->can_delete_document($document))
         {
             $document->delete();
             return Redirect::to(Session::get('previous'));
@@ -213,9 +178,16 @@ class DocumentCon extends \BaseController {
         $params = array(Input::get('container_id'));
         $container = call_user_func($callback, $params)->first();
 
-        self::processUpload($container, 'document');
-
-        return Redirect::to(Session::get('previous'));
+        $user = Auth::user();
+        if ($user->can_upload_to($container))
+        {
+            self::processUpload($container, 'document');
+            return Redirect::to(Session::get('previous'));
+        }
+        else
+        {
+            App::abort(403, 'Cannot upload.');
+        }
 	}
 
     public static function processUpload($container, $key) {

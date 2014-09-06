@@ -55,11 +55,21 @@ Route::get('author/delete/document/{document}', 'DocumentCon@confirmDeleteDocume
 Route::post('author/delete/document/{document}', 'DocumentCon@deleteDocument');
 Route::post('author/save/keywords/{submission}', 'AuthorCon@saveKeywords');
 
-Route::filter('author', function()
+
+Route::get('reviewer', 'ReviewerCon@showHome');
+Route::get('reviewer/{review}', 'ReviewerCon@viewReview');
+Route::get('reviewer/delete/document/{document}', 'DocumentCon@confirmDeleteDocument');
+Route::post('reviewer/delete/document/{document}', 'DocumentCon@deleteDocument');
+Route::post('reviewer/save/keywords', 'ReviewerCon@saveKeywords');
+Route::post('reviewer/save/categories', 'ReviewerCon@saveCategories');
+
+
+Route::filter('login', function()
 {
     if (Auth::guest())
     {
         return Redirect::guest('login');
     }
 });
-Route::when('author*', 'author');
+Route::when('author*', 'login');
+Route::when('reviewer*', 'login');

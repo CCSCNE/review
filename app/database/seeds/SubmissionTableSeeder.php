@@ -12,14 +12,11 @@ class SubmissionTableSeeder extends Seeder {
         $this->faker = Faker\Factory::create();
         DB::table('submissions')->truncate();
 
-        for ($i = 0; $i < 30; $i++) {
-            $this->generateForUser(1);
-        }
-
-        $users = User::all()->count();
-        for ($i = 0; $i < 30; $i++) {
-            $user = rand(2, $users);
-            $this->generateForUser($user);
+        foreach (User::where('email', 'LIKE', 'author%')->get() as $author) {
+            for ($i=0; $i < 5; $i++)
+            {
+                $this->generateForUser($author);
+            }
         }
     }
 

@@ -6,31 +6,47 @@ class ReviewTableSeeder extends Seeder
     public function run()
     {
         DB::table('reviews')->truncate();
+        $faker = Faker\Factory::create();
 
-        $submissions = Submission::all()->count();
-        $users = User::all()->count();
-
-        $subids = array();
-        for($subid = 1; $subid <= $submissions; $subid++)
+        $reviewers = User::where('email', 'LIKE', 'reviewer%')->get();
+        foreach ($reviewers as $reviewer)
         {
-            $subids[] = $subid;
+            foreach ($reviewer->categoriesReviewing as $category)
+            {
+                foreach ($category->submissions as $submission)
+                {
+                    $review = new Review;
+                    $review->user_id = $reviewer->id;
+                    $review->submission_id = $submission->id;
+                    $review->save();
+                }
+            }
         }
 
-        for($user = 1; $user <= $users; $user++)
+        /*
+        foreach ($submissions as $submission)
         {
-            $sids = $subids;
-            for ($i = 0; $i < 3; $i++)
+            $reviewers = $submission->category->reviewers()->get();
+            print($reviewers->count() . " reviewers\n");
+            $revs = array();
+            foreach ($reviewers as $reviewer) {
+                $revs[] = $reviewer;
+            }
+            for ($i = 0; $i < 5; $i++)
             {
-                $random = rand(0, count($sids)-1);
-                $sid = $sids[$random];
-                unset($sids[$random]);
-                $sids = array_values($sids);
+                try {
+                    $reviewer = $faker->unique()->randomElement($revs);
+                } catch (Exception $exception) {
+                    $faker->unique($reset = true);
+                    $reviewer = $faker->unique()->randomElement($revs);
+                }
                 $review = new Review;
-                $review->user_id = $user;
-                $review->submission_id = $sid;
+                $review->user_id = $reviewer->id;
+                $review->submission_id = $submission->id;
                 $review->save();
             }
         }
+         */
     }
 
 }

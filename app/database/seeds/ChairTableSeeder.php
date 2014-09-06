@@ -10,7 +10,11 @@ class ChairTableSeeder extends Seeder {
         for ($i = 1; $i <= Category::all()->count(); $i++) {
             $ids[] = $i;
         }
-        $user = User::find(1)->categoriesChairing()->sync($ids);
+
+        foreach(User::where('email', 'LIKE', 'chair%')->get() as $chair)
+        {
+            $chair->categoriesChairing()->sync($ids);
+        }
     }
 
 }
