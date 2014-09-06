@@ -64,7 +64,6 @@ class DocumentCon extends \BaseController {
 	{
         Session::keep('previous');
         $document = Document::findOrFail($document_id);
-        // FIXME Need to check permissions
         return View::make('author.confirm_delete_document')
             ->withDocument($document);
 	}
@@ -72,11 +71,55 @@ class DocumentCon extends \BaseController {
     public function deleteDocument($document_id)
     {
         $document = Document::findOrFail($document_id);
-        $document->delete();
-        return Redirect::to(Session::get('previous'));
+        $user = Auth::user();
+        $container = $document->container;
+
+        $category = null;
+        if ($container instanceof Submission)
+        {
+            $category = $container->category;
+        }
+        else if ($container instanceof Category)
+        {
+            $category = $container;
+        }
+        else if ($container instanceof Review)
+        {
+            $category = $container->category;
+        }
+
+        $can_delete = false;
+        if ($user->is_chair_of($category))
+        {
+            $can_delete = true;
+        }
+        else if ($container instanceof Submission)
+        {
+            if ($user->is_author_of($container))
+            {
+                if ($container->is_status_effectively('open'))
+                {
+                    $can_delete = true;
+                }
+                else if ($container->is_status_effectively('finalizing')
+                    && Str::startsWith($document->name, 'Final'))
+                {
+                    $can_delete = true;
+                }
+            }
+        }
+
+        if ($can_delete)
+        {
+            $document->delete();
+            return Redirect::to(Session::get('previous'));
+        }
+        else
+        {
+            App::abort(403, "Cannot delete.");
+        }
     }
-
-
+ 
     public function download($document_id)
     {
         $user = Auth::user();
@@ -147,7 +190,7 @@ class DocumentCon extends \BaseController {
             return Response::download('uploads/'.$document->saved_name, $document->name);
         }
 
-        App::abort(403, 'Unauthorized action.');
+        App::abort(403, 'Cannot download.');
     }
 
     public function upload()
@@ -170,18 +213,24 @@ class DocumentCon extends \BaseController {
         $params = array(Input::get('container_id'));
         $container = call_user_func($callback, $params)->first();
 
-        $user = Auth::user();
-        $file = Input::file('document');
+        self::processUpload($container, 'document');
 
+        return Redirect::to(Session::get('previous'));
+	}
+
+    public static function processUpload($container, $key) {
         // Create a blank Document entry. We need its id to generate the 
         // filename.
         $document = new Document;
         $document->save();
 
-        $container_code = substr($container_type, 0, 1);
+        $container_type = get_class($container);
         $container_id = $container->id;
         $document_id = $document->id;
+
+        $file = Input::file($key);
         $extension = $file->getClientOriginalExtension();
+
         if ($container_type == 'Category')
         {
             $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -190,16 +239,21 @@ class DocumentCon extends \BaseController {
         }
         else
         {
-            $document->name = "$container_type-$container_id-$document_id.$extension";
+            $type = $container_type;
+            if ($container_type == 'Submission'
+                && $container->is_status_effectively('finalizing'))
+            {
+                $type = 'Final';
+            }
+            $document->name = "$type-$container_id-$document_id.$extension";
             $document->saved_name = uniqid() . '/' . $document->name;
         }
 
         $file->move('uploads/'.dirname($document->saved_name), basename($document->saved_name));
 
         $document->container()->associate($container);
+        $document->user_id = Auth::user()->id;
         $document->save();
-
-        return Redirect::to(Session::get('previous'));
-	}
+    }
 
 }

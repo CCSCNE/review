@@ -135,7 +135,7 @@ class UserCon extends \BaseController {
         );
 
         if (Auth::attempt($creds)) {
-            $users_home = route('user.show', array(Auth::user()->id));
+            $users_home = action('AuthorCon@showHome');
             return Redirect::intended($users_home)
                 ->with('success', 'You have logged in successfully');
         } else {

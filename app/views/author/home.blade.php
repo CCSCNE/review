@@ -34,14 +34,18 @@
     </thead>
     @foreach(Category::all() as $category)
     <tr>
-        <td>{{{$category->name}}}</td>
+        <td>{{{ $category->name }}}</td>
         <td>
-            <div><a href="#">description.doc</a></div>
-            <div><a href="#">author-template.doc</a></div>
-            <div><a href="#">reviewer-template.doc</a></div>
+            @foreach($category->documents as $document)
+            <div>{{ link_to_action('DocumentCon@download', e($document->name), array($document->id)) }}</div>
+            @endforeach
         </td>
-        <td>Open</td>
-        <td><a href="#">Submit</a></td>
+        <td>{{ $category->status }}</td>
+        <td>
+            @if($category->is_status('open'))
+            {{ link_to_action('AuthorCon@create', 'New submission', array($category->id)) }}
+            @endif
+        </td>
     </tr>
     @endforeach
 </table>

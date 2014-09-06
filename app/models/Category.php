@@ -21,10 +21,23 @@ class Category extends Eloquent {
     }
 
     public function documents() {
-        return $this->morphMany('Document', 'container_id');
+        return $this->morphMany('Document', 'container');
     }
 
     public function chairs() {
         return $this->belongsToMany('User', 'chairs')->withTimestamps();
+    }
+
+    public function is_status($test_status) {
+        if (is_string($test_status)) {
+            $test_status = array($test_status);
+        }
+
+        foreach ($test_status as $ts) {
+            if ($this->status == $ts) {
+                return true;
+            }
+        }
+        return false;
     }
 }

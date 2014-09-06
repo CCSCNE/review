@@ -17,12 +17,14 @@ Route::get('/', function()
 });
 
 Route::resource('user', 'UserCon');
-Route::resource('keyword', 'KeywordCon');
 Route::resource('submission', 'SubmissionCon');
+/*
+Route::resource('keyword', 'KeywordCon');
 Route::resource('conference', 'ConferenceCon');
 Route::resource('category', 'CategoryCon');
 Route::resource('review', 'ReviewCon');
 Route::resource('document', 'DocumentCon');
+ */
 
 Route::get('login', 'UserCon@getLogin');
 Route::post('login', 'UserCon@postLogin');
@@ -45,8 +47,8 @@ Route::post('chair/assignments', 'ChairCon@postAssignments');
 
 
 Route::get('author', 'AuthorCon@showHome');
-Route::get('author/submit', 'AuthorCon@create');
-Route::post('author/submit', 'AuthorCon@save');
+Route::get('author/submit/{category}', 'AuthorCon@create');
+Route::post('author/submit/{category}', 'AuthorCon@save');
 Route::get('author/{submission}', 'AuthorCon@edit');
 Route::post('author/{submission}', 'AuthorCon@update');
 Route::get('author/delete/document/{document}', 'DocumentCon@confirmDeleteDocument');

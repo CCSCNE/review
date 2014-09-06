@@ -6,6 +6,7 @@
 Title: {{ $submission->title }}<br>
 Category: {{ $submission->category->name }}<br>
 ID: #{{ $submission->id }}<br>
+Status: {{ $submission->getEffectiveStatus() }}
 
 <h3>Authors</h3>
 <ul>
@@ -14,6 +15,7 @@ ID: #{{ $submission->id }}<br>
 
 <h3>Keywords</h3>
 
+@if($submission->is_status_effectively('open'))
 {{ Form::open(array('action'=>array('AuthorCon@saveKeywords', $submission->id))) }}
 @foreach(Keyword::all() as $keyword)
 <div>
@@ -27,6 +29,13 @@ ID: #{{ $submission->id }}<br>
 @endforeach
 {{ Form::submit('Save') }}
 {{ Form::close() }}
+@else
+    <ul>
+    @foreach($submission->keywords as $keyword)
+        <li>{{ $keyword->keyword }}</li>
+    @endforeach
+    </ul>
+@endif
 
 <h3>Files</h3>
 <table>
@@ -49,9 +58,9 @@ ID: #{{ $submission->id }}<br>
             @endif
             </td>
             <td>
-            @if($submission->is_status_effectively(array('open')))
+                @if($submission->is_status_effectively('open') || ($submission->is_status_effectively('finalizing') && Str::startsWith($document->name, 'Final')))
                 {{ link_to_action('DocumentCon@confirmDeleteDocument', 'delete', array($document->id)) }}
-            @endif
+                @endif
             </td>
         </tr>
     @endforeach
