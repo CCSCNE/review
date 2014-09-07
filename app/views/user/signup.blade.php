@@ -27,6 +27,6 @@
 
 {{ Form::close() }}
 
-{{ link_to('login', 'Log in') }}
+{{ link_to_route('login', 'Log in') }}
 
 @stop

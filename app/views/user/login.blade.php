@@ -19,6 +19,6 @@
 
 {{ Form::close() }}
 
-{{ link_to('signup', 'Sign up') }}
+{{ link_to_route('signup', 'Sign up') }}
 
 @stop

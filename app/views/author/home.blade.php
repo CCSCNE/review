@@ -37,7 +37,7 @@
         <td>{{{ $category->name }}}</td>
         <td>
             @foreach($category->documents as $document)
-            <div>{{ link_to_action('DocumentCon@download', e($document->name), array($document->id)) }}</div>
+            <div>{{ link_to_route('download', e($document->name), array($document->id)) }}</div>
             @endforeach
         </td>
         <td>{{ $category->status }}</td>

@@ -11,64 +11,72 @@
 |
 */
 
-Route::get('/', function()
+
+Route::get('/', array('as'=>'home', function()
 {
 	return View::make('home');
-});
-
-Route::resource('user', 'UserCon');
-Route::resource('submission', 'SubmissionCon');
-/*
-Route::resource('keyword', 'KeywordCon');
-Route::resource('conference', 'ConferenceCon');
-Route::resource('category', 'CategoryCon');
-Route::resource('review', 'ReviewCon');
-Route::resource('document', 'DocumentCon');
- */
-
-Route::get('login', 'UserCon@getLogin');
-Route::post('login', 'UserCon@postLogin');
-Route::get('logout', 'UserCon@getLogout');
-Route::get('signup', 'UserCon@getSignup');
-Route::post('signup', 'UserCon@postSignup');
-
-Route::get('category/{category}/submission/create/{user?}',
-    array('as'=>'category.submission', 'uses'=>'SubmissionCon@create'));
-
-Route::get('category/{category}/volunteer/{user}', 'CategoryCon@getVolunteerToReview');
-Route::post('category/{category}/volunteer/{user}', 'CategoryCon@postVolunteerToReview');
-
-Route::get('download/{document}', 'DocumentCon@download');
-Route::post('upload', 'DocumentCon@upload');
+}));
 
 
-Route::get('author', 'AuthorCon@showHome');
-Route::get('author/submit/{category}', 'AuthorCon@create');
+Route::get('user/login', array('as'=>'login', 'uses'=>'UserCon@getLogin'));
+Route::post('user/login', 'UserCon@postLogin');
+Route::get('user/logout', array('as'=>'logout', 'uses'=>'UserCon@getLogout'));
+Route::get('user/signup', array('as'=>'signup', 'uses'=>'UserCon@getSignup'));
+Route::post('user/signup', 'UserCon@postSignup');
+
+
+Route::get('category/{category}/submission/create',
+    array('as'=>'submit', 'uses'=>'SubmissionCon@create'));
+
+
+Route::get('document/{document}',
+    array('as'=>'download', 'uses'=>'DocumentCon@download'));
+Route::post('document/upload', array('as'=>'upload', 'uses'=>'DocumentCon@upload'));
+Route::get('document/{document}/delete',
+    array('as'=>'delete.document', 'uses'=>'DocumentCon@confirmDeleteDocument'));
+Route::post('document/{document}/delete', 'DocumentCon@deleteDocument');
+
+
+Route::get('author',
+    array('as'=>'author', 'uses'=>'AuthorCon@showHome'));
+Route::get('author/submit/{category}',
+    array('as'=>'submit', 'uses'=>'AuthorCon@create'));
 Route::post('author/submit/{category}', 'AuthorCon@save');
-Route::get('author/{submission}', 'AuthorCon@edit');
-Route::post('author/{submission}', 'AuthorCon@update');
-Route::get('author/delete/document/{document}', 'DocumentCon@confirmDeleteDocument');
-Route::post('author/delete/document/{document}', 'DocumentCon@deleteDocument');
-Route::post('author/save/keywords/{submission}', 'AuthorCon@saveKeywords');
+Route::get('author/{submission}', 
+    array('as'=>'author.view.submission', 'uses'=>'AuthorCon@edit'));
+Route::post('author/save/keywords/{submission}',
+    array('as'=>'author.save.keywords', 'uses'=>'AuthorCon@saveKeywords'));
 
 
-Route::get('reviewer', 'ReviewerCon@showHome');
-Route::get('reviewer/{review}', 'ReviewerCon@viewReview');
-#Route::get('reviewer/delete/document/{document}', 'DocumentCon@confirmDeleteDocument');
-Route::post('reviewer/delete/document/{document}', 'DocumentCon@deleteDocument');
-Route::post('reviewer/save/keywords', 'ReviewerCon@saveKeywords');
-Route::post('reviewer/save/categories', 'ReviewerCon@saveCategories');
+Route::get('reviewer',
+    array('as'=>'reviewer', 'uses'=>'ReviewerCon@showHome'));
+Route::get('reviewer/{review}',
+    array('as'=>'view.review', 'uses'=>'ReviewerCon@viewReview'));
+Route::post('reviewer/save/keywords',
+    array('as'=>'save.reviewer.keywords', 'uses'=>'ReviewerCon@saveKeywords'));
+Route::post('reviewer/save/categories',
+    array('as'=>'save.reviewer.categories',
+        'uses'=>'ReviewerCon@saveCategories'));
 
 
-Route::get('chair', 'ChairCon@home');
-Route::get('chair/category/{category}', 'ChairCon@viewCategory');
-Route::post('chair/category/{category}/keyword/save', 'ChairCon@saveCategoryKeywords');
-Route::post('chair/category/{category}/keyword/create', 'ChairCon@createCategoryKeyword');
-Route::get('chair/assignments/{category}', 'ChairCon@getAssignments');
-Route::post('chair/assignments', 'ChairCon@postAssignments');
-Route::post('chair/category/{category}/status/save', 'ChairCon@saveCategoryStatus');
-Route::post('chair/category/{category}/chair/add', 'ChairCon@addCategoryChair');
-Route::get('chair/category/{category}/chair/{chair}/remove', 'ChairCon@removeCategoryChair');
+Route::get('chair', array('as'=>'chair', 'uses'=>'ChairCon@home'));
+Route::get('chair/category/{category}',
+    array('as'=>'chair.view.category', 'uses'=>'ChairCon@viewCategory'));
+Route::post('chair/category/{category}/keyword/save',
+    array('as'=>'save.category.keywords',
+        'uses'=>'ChairCon@saveCategoryKeywords'));
+Route::post('chair/category/{category}/keyword/create',
+    array('as'=>'create.keyword',
+        'uses'=>'ChairCon@createCategoryKeyword'));
+Route::post('chair/category/{category}/assignment/save',
+    array('as'=>'save.assignments', 'uses'=>'ChairCon@postAssignments'));
+Route::post('chair/category/{category}/status/save',
+    array('as'=>'save.category.status',
+        'uses'=>'ChairCon@saveCategoryStatus'));
+Route::post('chair/category/{category}/chair/add',
+    array('as'=>'add.chair', 'uses'=>'ChairCon@addCategoryChair'));
+Route::get('chair/category/{category}/chair/{chair}/remove',
+    array('as'=>'remove.chair', 'uses'=>'ChairCon@removeCategoryChair'));
 
 
 Route::filter('login', function()

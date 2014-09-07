@@ -25,15 +25,15 @@
             <li class="has-dropdown">
                 <a href="#">{{ Auth::user()->email }}</a>
                 <ul class="dropdown">
-                    <li>{{ link_to('/logout', 'Log out') }}</li>
+                    <li>{{ link_to_route('logout', 'Log out') }}</li>
                 </ul>
             </li>
             @else
             <li class="has-dropdown">
                 <a href="#">Account</a>
                 <ul class="dropdown">
-                    <li>{{ link_to('/login', 'Log in') }}</li>
-                    <li>{{ link_to('/signup', 'Sign up') }}</li>
+                    <li>{{ link_to_route('login', 'Log in') }}</li>
+                    <li>{{ link_to_route('signup', 'Sign up') }}</li>
                 </ul>
             </li>
              @endif
@@ -51,6 +51,8 @@
         </ul> 
         </section> 
         </nav>
+
+        {{ Breadcrumbs::render() }}
 
         <div class="row">
             <div class="large-12 columns">

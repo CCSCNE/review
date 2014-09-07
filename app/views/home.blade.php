@@ -7,5 +7,5 @@ Welcome
 
 
 @section('content')
-{{ link_to('login', 'Log in') }} or {{ link_to('signup', 'Sign up') }}
+{{ link_to_route('login', 'Log in') }} or {{ link_to_route('signup', 'Sign up') }}
 @stop

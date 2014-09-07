@@ -108,14 +108,14 @@ class UserCon extends \BaseController {
 
     public function getLogin()
     {
-        $login = Request::path();
-        return View::make('user.login')->withAction(array('url' => $login));
+        return View::make('user.login')
+            ->withAction(array('action' => 'UserCon@postLogin'));
     }
 
 
     public function postLogin()
     {
-        $login = Request::path();
+        $getLogin = 'UserCon@getLogin';
 
         $rules = array(
             'email' => 'required|email|exists:users',
@@ -124,7 +124,7 @@ class UserCon extends \BaseController {
 
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->failed()) {
-            return Redirect::to($login)
+            return Redirect::action($getLogin)
                 ->withErrors($validator)
                 ->withInput(Input::except('password'));
         }
@@ -135,11 +135,10 @@ class UserCon extends \BaseController {
         );
 
         if (Auth::attempt($creds)) {
-            $users_home = action('AuthorCon@showHome');
-            return Redirect::intended($users_home)
+            return Redirect::intended($fallback = route('home'))
                 ->with('success', 'You have logged in successfully');
         } else {
-            return Redirect::to($login)
+            return Redirect::action($getLogin)
                 ->withErrors(array('password'=>'Password invalid'))
                 ->withInput(Input::except('password'));
         }

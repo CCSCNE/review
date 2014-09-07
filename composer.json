@@ -5,7 +5,8 @@
 	"license": "MIT",
 	"type": "project",
 	"require": {
-		"laravel/framework": "4.2.*"
+		"laravel/framework": "4.2.*",
+		"davejamesmiller/laravel-breadcrumbs": "~2.2.2"
 	},
         "require-dev": {
                 "fzaninotto/faker": "1.4.*"
