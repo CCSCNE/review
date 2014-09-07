@@ -34,6 +34,91 @@ class ChairCon extends \BaseController
     }
 
 
+    public function saveCategoryStatus($category_id)
+    {
+        $user = Auth::user();
+        $category = Category::findOrFail($category_id);
+
+        if (!$user->is_chair_of($category))
+        {
+            App::abort(403, 'Your are not a chair');
+        }
+
+        $rules = array(
+            'status' => array(
+                'required',
+                'regex:/(closed)|(open)|(reviewing)|(finalizing)|(final)/',
+            ),
+        );
+
+        $validator = Validator::make(Input::all(), $rules);
+        if ($validator->fails())
+        {
+            return Redirect::to(Session::get('previous'))->withErrors($validator);
+        }
+
+        $category->status = Input::get('status');
+        $category->save();
+
+        return Redirect::to(Session::get('previous'));
+    }
+
+
+    public function addCategoryChair($category_id)
+    {
+        $user = Auth::user();
+        $category = Category::findOrFail($category_id);
+
+        if (!$user->is_chair_of($category))
+        {
+            App::abort(403, 'Your are not a chair');
+        }
+
+        $rules = array(
+            'chair' => array(
+                'required',
+                'email',
+                'exists:users,email',
+            ),
+        );
+
+        $validator = Validator::make(Input::all(), $rules);
+
+        if ($validator->fails())
+        {
+            return Redirect::to(Session::get('previous'))
+                ->withErrors($validator);
+        }
+
+        $chair = User::where('email', Input::get('chair'))->first();
+
+        if (!$category->chairs->contains($chair->id))
+        {
+            $category->chairs()->attach($chair->id);
+        }
+
+        return Redirect::to(Session::get('previous'));
+    }
+
+
+    public function removeCategoryChair($category_id, $chair_id)
+    {
+        $user = Auth::user();
+        $category = Category::findOrFail($category_id);
+
+        if (!$user->is_chair_of($category))
+        {
+            App::abort(403, 'Your are not a chair');
+        }
+
+        $chair = User::findOrFail($chair_id);
+
+        $category->chairs()->detach($chair->id);
+
+        return Redirect::to(Session::get('previous'));
+    }
+
+
     public function saveCategoryKeywords($category_id)
     {
         $user = Auth::user();
@@ -88,6 +173,7 @@ class ChairCon extends \BaseController
 
         return Redirect::to(Session::get('previous'));
     }
+
 
 
     public function getAssignments($category_id)

@@ -41,10 +41,6 @@ Route::post('category/{category}/volunteer/{user}', 'CategoryCon@postVolunteerTo
 Route::get('download/{document}', 'DocumentCon@download');
 Route::post('upload', 'DocumentCon@upload');
 
-Route::get('chair/assignments/{category}', 'ChairCon@getAssignments');
-Route::post('chair/assignments', 'ChairCon@postAssignments');
-
-
 
 Route::get('author', 'AuthorCon@showHome');
 Route::get('author/submit/{category}', 'AuthorCon@create');
@@ -58,7 +54,7 @@ Route::post('author/save/keywords/{submission}', 'AuthorCon@saveKeywords');
 
 Route::get('reviewer', 'ReviewerCon@showHome');
 Route::get('reviewer/{review}', 'ReviewerCon@viewReview');
-Route::get('reviewer/delete/document/{document}', 'DocumentCon@confirmDeleteDocument');
+#Route::get('reviewer/delete/document/{document}', 'DocumentCon@confirmDeleteDocument');
 Route::post('reviewer/delete/document/{document}', 'DocumentCon@deleteDocument');
 Route::post('reviewer/save/keywords', 'ReviewerCon@saveKeywords');
 Route::post('reviewer/save/categories', 'ReviewerCon@saveCategories');
@@ -68,6 +64,11 @@ Route::get('chair', 'ChairCon@home');
 Route::get('chair/category/{category}', 'ChairCon@viewCategory');
 Route::post('chair/category/{category}/keyword/save', 'ChairCon@saveCategoryKeywords');
 Route::post('chair/category/{category}/keyword/create', 'ChairCon@createCategoryKeyword');
+Route::get('chair/assignments/{category}', 'ChairCon@getAssignments');
+Route::post('chair/assignments', 'ChairCon@postAssignments');
+Route::post('chair/category/{category}/status/save', 'ChairCon@saveCategoryStatus');
+Route::post('chair/category/{category}/chair/add', 'ChairCon@addCategoryChair');
+Route::get('chair/category/{category}/chair/{chair}/remove', 'ChairCon@removeCategoryChair');
 
 
 Route::filter('login', function()
