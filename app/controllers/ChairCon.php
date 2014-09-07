@@ -1,8 +1,97 @@
 <?php
 
-class ChairCon extends \BaseController {
+class ChairCon extends \BaseController
+{
 
-    public function getAssignments($category_id) {
+    public function home()
+    {
+        $user = Auth::user();
+
+        if (!$user->is_a_chair())
+        {
+            App::abort(403, "You are not a chair");
+        }
+
+        Session::flash('previous', Request::url());
+        return View::make('chair.home')->withUser($user);
+    }
+
+
+    public function viewCategory($category_id)
+    {
+        $user = Auth::user();
+        $category = Category::findOrFail($category_id);
+
+        if (!$user->is_chair_of($category))
+        {
+            App::abort(403, 'Your are not a chair');
+        }
+
+        Session::flash('previous', Request::url());
+        return View::make('chair.view_category')
+            ->withUser($user)
+            ->withCategory($category);
+    }
+
+
+    public function saveCategoryKeywords($category_id)
+    {
+        $user = Auth::user();
+        $category = Category::findOrFail($category_id);
+
+        if (!$user->is_chair_of($category))
+        {
+            App::abort(403, 'Your are not a chair');
+        }
+
+        $keywords = Keyword::whereIn('id', Input::get('keywords', array()))->get();
+        $kws = array();
+        foreach($keywords as $kw) {
+            $kws[] = $kw->id;
+        }
+
+        $category->keywords()->sync($kws);
+        return Redirect::to(Session::get('previous'));
+    }
+
+
+    public function createCategoryKeyword($category_id)
+    {
+        $user = Auth::user();
+        $category = Category::findOrFail($category_id);
+
+        if (!$user->is_chair_of($category))
+        {
+            App::abort(403, 'Your are not a chair');
+        }
+
+        $rules = array(
+            'keyword' => array(
+                'required',
+                'regex:/^[a-zA-Z0-9 _-]+$/',
+                'regex:/[a-zA-Z0-9_-]/',
+                'unique:keywords,keyword'
+            ),
+        );
+
+        $validator = Validator::make(Input::all(), $rules);
+
+        if ($validator->fails())
+        {
+            return Redirect::to(Session::get('previous'))
+                ->withErrors($validator);
+        }
+
+        $keyword = new Keyword;
+        $keyword->keyword = trim(Input::get('keyword'));
+        $category->keywords()->save($keyword);
+
+        return Redirect::to(Session::get('previous'));
+    }
+
+
+    public function getAssignments($category_id)
+    {
         $category = Category::find($category_id);
         $action = array('action' => 'ChairCon@postAssignments');
         return View::make('chair.assignments')
@@ -11,7 +100,9 @@ class ChairCon extends \BaseController {
             ;
     }
 
-    public function postAssignments() {
+
+    public function postAssignments()
+    {
         $assignments = Input::get('assignments', array());
         $keep_ids = array();
         foreach ($assignments as $submission_id => $reviewerIds) {
@@ -44,7 +135,7 @@ class ChairCon extends \BaseController {
             }
             Review::where('submission_id', $submission->id)->whereNotIn('user_id', $ids)->delete();
         }
-        return Redirect::action('ChairCon@getAssignments', array(Input::get('category_id')));
+        return Redirect::to(Session::get('previous'));
     }
 
 }

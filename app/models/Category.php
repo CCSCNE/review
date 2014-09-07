@@ -28,6 +28,10 @@ class Category extends Eloquent {
         return $this->belongsToMany('User', 'chairs')->withTimestamps();
     }
 
+    public function reviews() {
+        return $this->hasManyThrough('Review', 'Submission', 'category_id', 'submission_id');
+    }
+
     public function is_status($test_status) {
         if (is_string($test_status)) {
             $test_status = array($test_status);

@@ -199,4 +199,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         }
         return $can_upload;
     }
+
+
+    public function is_a_chair()
+    {
+        return !$this->categoriesChairing->isEmpty();
+    }
 }

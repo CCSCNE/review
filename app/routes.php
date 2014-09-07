@@ -64,6 +64,12 @@ Route::post('reviewer/save/keywords', 'ReviewerCon@saveKeywords');
 Route::post('reviewer/save/categories', 'ReviewerCon@saveCategories');
 
 
+Route::get('chair', 'ChairCon@home');
+Route::get('chair/category/{category}', 'ChairCon@viewCategory');
+Route::post('chair/category/{category}/keyword/save', 'ChairCon@saveCategoryKeywords');
+Route::post('chair/category/{category}/keyword/create', 'ChairCon@createCategoryKeyword');
+
+
 Route::filter('login', function()
 {
     if (Auth::guest())
@@ -73,3 +79,4 @@ Route::filter('login', function()
 });
 Route::when('author*', 'login');
 Route::when('reviewer*', 'login');
+Route::when('chair*', 'login');

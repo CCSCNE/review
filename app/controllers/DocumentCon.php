@@ -218,8 +218,8 @@ class DocumentCon extends \BaseController {
                 $type = 'Final';
             }
             $document->name = "$type-$container_id-$document_id.$extension";
-            $document->saved_name = uniqid() . '/' . $document->name;
         }
+        $document->saved_name = uniqid() . '/' . $document->name;
 
         $file->move('uploads/'.dirname($document->saved_name), basename($document->saved_name));
 

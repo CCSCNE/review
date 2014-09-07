@@ -85,7 +85,7 @@ class AuthorCon extends \BaseController
         }
 
         $user = Auth::user();
-        if ($user->is_reviwer_for($category))
+        if ($user->is_reviewer_for($category))
         {
             App::abort(403, "Reviewers cannot submit work to the same category they are reviewing.");
         }
