@@ -1,8 +1,11 @@
 @extends('chair.layout')
 
-@section('content')
-<h2>{{{$category->name}}}</h2>
+@section('title')
+{{{$category->name}}}
+@stop
 
+
+@section('content')
 <h3>Status: {{ $category->status }}</h3>
 
 <div class="panel">

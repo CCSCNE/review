@@ -1,5 +1,9 @@
 @extends('chair.layout')
 
+@section('title')
+Chair Home
+@stop
+
 @section('content')
 <h3>Your Categories</h3>
 <table>

@@ -1,5 +1,9 @@
 @extends('reviewer.layout')
 
+@section('title')
+Reviewer Home
+@stop
+
 @section('content')
 <h3>1. Select Categories</h3>
 <p>Please check the categories you would like to review.</p>

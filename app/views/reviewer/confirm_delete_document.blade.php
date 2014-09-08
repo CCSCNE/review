@@ -1,12 +1,11 @@
 @extends('author.layout')
 
+@section('title')
+Delete <b>{{$document->name}}</b>?
+@stop
+
 @section('content')
 <div class="panel">
-    <div class="row">
-        <div class="columns small-12">
-            <h3>Delete <b>{{$document->name}}</b>?</h3>
-        </div>
-    </div>
     <div class="row">
         {{ Form::open(array('action'=>array('DocumentCon@deleteDocument',$document->id))) }}
         <div class="columns small-3">

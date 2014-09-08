@@ -8,6 +8,13 @@
         {{ HTML::script('bower_components/modernizr/modernizr.js') }}
     </head>
     <body>
+        <header>
+        <noscript>
+            <div class="alert-box alert">
+                This site relies on JavaScript, and it appears your browser has
+                JavaScript disabled. Please enable JavaScript before continuing.
+            </div>
+        </noscript>
         <nav class="top-bar" data-topbar role="navigation">
         <ul class="title-area"> 
             <li class="name"> 
@@ -45,15 +52,19 @@
             <li @if(Str::startsWith(Request::path(), 'reviewer'))
                     class="active"
                 @endif>{{ link_to('/reviewer', 'Reviewer') }}</li>
+            @if(Auth::check() && Auth::user()->is_a_chair())
             <li @if(Str::startsWith(Request::path(), 'chair'))
                     class="active"
                 @endif>{{ link_to('/chair', 'Chair') }}</li>
+            @endif
         </ul> 
         </section> 
         </nav>
 
         {{ Breadcrumbs::render() }}
+        </header>
 
+        <main>
         <div class="row">
             <div class="large-12 columns">
                 <h1>@yield('title')</h1>
@@ -64,6 +75,14 @@
                 @yield('content')
             </div>
         </div>
+        </main>
+
+
+        <footer>
+        <div class="columns">
+            &copy; 2014 "Stoney" Herman L. Jackson II
+        </div>
+        </footer>
 
         {{ HTML::script('bower_components/jquery/dist/jquery.min.js') }}
         {{ HTML::script('bower_components/foundation/js/foundation.min.js') }}

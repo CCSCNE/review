@@ -1,5 +1,9 @@
 @extends('reviewer.layout')
 
+@section('title')
+Review
+@stop
+
 @section('content')
 
 <h3>1. Read Category Files</h3>

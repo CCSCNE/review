@@ -1,5 +1,9 @@
 @extends('author.layout')
 
+@section('title')
+New submission
+@stop
+
 @section('content')
 {{ Form::open(array('action'=>array('AuthorCon@save', $category->id), 'files'=>true)) }}
 {{ Form::label('title') }}

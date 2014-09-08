@@ -33,8 +33,7 @@ Route::get('document/{document}',
     array('as'=>'download', 'uses'=>'DocumentCon@download'));
 Route::post('document/upload', array('as'=>'upload', 'uses'=>'DocumentCon@upload'));
 Route::get('document/{document}/delete',
-    array('as'=>'delete.document', 'uses'=>'DocumentCon@confirmDeleteDocument'));
-Route::post('document/{document}/delete', 'DocumentCon@deleteDocument');
+    array('as'=>'delete.document', 'uses'=>'DocumentCon@deleteDocument'));
 
 
 Route::get('author',
@@ -83,7 +82,7 @@ Route::filter('login', function()
 {
     if (Auth::guest())
     {
-        return Redirect::guest('login');
+        return Redirect::guest(route('login'));
     }
 });
 Route::when('author*', 'login');

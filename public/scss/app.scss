@@ -1,2 +1,27 @@
 @import "settings";
 @import "foundation";
+
+body {
+    background-color: #555;
+    color: #AAA;
+}
+
+header {
+    background-color: #000;
+}
+
+main {
+    background-color: #FFF;
+    padding-bottom: 2em;
+}
+
+// Remove gap around ul for breadcrumbs.
+.breadcrumbs {
+    margin: 0;
+}
+
+footer {
+    margin-top: 1em;
+    font-size: small;
+    padding-bottom: 5em;
+}
