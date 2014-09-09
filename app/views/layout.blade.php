@@ -28,6 +28,10 @@
         </ul> 
         <section class="top-bar-section"> 
         <ul class="right"> 
+            <li class="has->form">
+                {{ link_to('https://github.com/StoneyJackson/review/issues/new',
+                    'Report problem', array('class'=>'button alert')) }}
+            </li>
             @if(Auth::check())
             <li class="has-dropdown">
                 <a href="#">{{ Auth::user()->email }}</a>
