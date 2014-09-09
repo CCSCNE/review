@@ -48,7 +48,9 @@ Status: {{ $review->submission->getEffectiveStatus() }}
     <li>
         {{link_to_action('DocumentCon@download', e($document->name), array($document->id))}}
         @if($user->can_delete_document($document))
-            [{{link_to_action('DocumentCon@confirmDeleteDocument', 'delete', array($document->id))}}]
+            [{{ link_to_route('delete.document', 'delete', array($document->id),
+            array('onclick'=>'return confirm("Delete '.$document->name.'?")'))
+            }}]
         @endif
     </li>
     @endforeach

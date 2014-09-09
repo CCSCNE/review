@@ -180,7 +180,7 @@
         @foreach($category->documents as $document)
         <li>
             {{ link_to_action('DocumentCon@download', e($document->name), array($category->id)) }}
-            {{ link_to_action('DocumentCon@confirmDeleteDocument', 'Delete', array($document->id)) }}
+            {{ link_to_route('delete.document', 'Delete', array($document->id), array('onclick'=>'return confirm("Delete '.$document->name.'?")')) }}
         </li>
         @endforeach
     </ul>
