@@ -21,7 +21,7 @@ Version numbers represent the least version on which Review has been tested.
 
 Review is open-source software licensed under [GPL v3.0](http://www.gnu.org/copyleft/gpl.html)
 
-Copyright (C) 2014 "Stoney" Herman Lee Jackson II <dr.stoney@gmail.com>
+Copyright (C) 2014 "Stoney" Herman Lee Jackson II \<dr.stoney@gmail.com\>
 
 ### Contributors' License Agreement
 
