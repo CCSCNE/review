@@ -15,7 +15,7 @@ class SubmissionTableSeeder extends Seeder {
         foreach (User::where('email', 'LIKE', 'author%')->get() as $author) {
             for ($i=0; $i < 5; $i++)
             {
-                $this->generateForUser($author);
+                $this->generateForUser($author->id);
             }
         }
     }

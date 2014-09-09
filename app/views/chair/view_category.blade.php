@@ -214,6 +214,16 @@
 
 <h3>Assign Submissions to Reviewers</h3>
 
+<ul>
+    <li>The column numbers are the reviewers' IDs. Hover over them for more
+    details.</li>
+    <li>The row numbers are the submissions' IDs. Hover over them for more
+    details.</li>
+    <li>The numbers in the cells are the number of keywords that match between
+    the corresponding submission and reviewer. Hover over them to see which
+    keywords matched.</li>
+</ul>
+
 <div class="panel">
 {{ Form::open(array('action' => 'ChairCon@postAssignments')) }}
 {{ Form::hidden('category_id', $category->id) }}
@@ -226,13 +236,13 @@
         <tr>
             <td></td>
             @foreach($category->reviewers as $reviewer)
-            <td>{{$reviewer->id}}</td>
+            <td title="{{{$reviewer->email}}}">{{$reviewer->id}}</td>
             @endforeach
         </tr>
     </thead>
     @foreach($category->submissions as $submission)
     <tr>
-        <td>{{$submission->id}}</td>
+        <td title="{{{$submission->title}}} - {{{$submission->user->email}}}">{{$submission->id}}</td>
         @foreach($category->reviewers as $reviewer)
         <td>
             <input type="checkbox"
@@ -242,7 +252,17 @@
                     ->where('submission_id', $submission->id)
                     ->where('user_id', $reviewer->id)->exists()
                         ? 'checked="checked"'
-                        : ''}} ></td>
+                        : ''}} >
+                        <span title="{{{ print_r(array_intersect(
+                            $submission->keywords()->lists('keyword'),
+                            $reviewer->keywords()->lists('keyword')), true)
+                            }}}">
+                        {{ count(array_intersect(
+                            $submission->keywords()->lists('keyword'),
+                            $reviewer->keywords()->lists('keyword'))) }}
+                        </span>
+                    
+                    </td>
         @endforeach
     </tr>
     @endforeach

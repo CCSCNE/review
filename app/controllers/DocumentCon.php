@@ -60,14 +60,6 @@ class DocumentCon extends \BaseController {
 	}
 
 
-	public function confirmDeleteDocument($document_id)
-	{
-        Session::keep('previous');
-        $document = Document::findOrFail($document_id);
-        return View::make('author.confirm_delete_document')
-            ->withDocument($document);
-	}
-
     public function deleteDocument($document_id)
     {
         $document = Document::findOrFail($document_id);
