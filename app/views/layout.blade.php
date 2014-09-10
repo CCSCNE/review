@@ -50,16 +50,18 @@
              @endif
         </ul> 
         <ul class="left"> 
-            <li @if(Str::startsWith(Request::path(), 'author'))
-                    class="active"
-                @endif>{{ link_to('/author', 'Author') }}</li>
-            <li @if(Str::startsWith(Request::path(), 'reviewer'))
-                    class="active"
-                @endif>{{ link_to('/reviewer', 'Reviewer') }}</li>
-            @if(Auth::check() && Auth::user()->is_a_chair())
-            <li @if(Str::startsWith(Request::path(), 'chair'))
-                    class="active"
-                @endif>{{ link_to('/chair', 'Chair') }}</li>
+            @if(Auth::check())
+                <li @if(Str::startsWith(Request::path(), 'author'))
+                        class="active"
+                    @endif>{{ link_to('/author', 'Author') }}</li>
+                <li @if(Str::startsWith(Request::path(), 'reviewer'))
+                        class="active"
+                    @endif>{{ link_to('/reviewer', 'Reviewer') }}</li>
+                @if(Auth::user()->is_a_chair())
+                <li @if(Str::startsWith(Request::path(), 'chair'))
+                        class="active"
+                    @endif>{{ link_to('/chair', 'Chair') }}</li>
+                @endif
             @endif
         </ul> 
         </section> 

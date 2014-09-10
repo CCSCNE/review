@@ -6,24 +6,24 @@
 
 
 @section('content')
-<h3>Status: {{ $category->status }}</h3>
+<h2>Status: {{ $category->status }}</h2>
 
 <div class="panel">
-{{ Form::open(array('action'=>array('ChairCon@saveCategoryStatus', $category->id))) }}
-{{ Form::radio('status', 'closed', $category->status == 'closed', array('id'=>'status_closed')) }}
-{{ Form::label('status_closed', 'Closed') }}
-{{ Form::radio('status', 'open', $category->status == 'open', array('id'=>'status_open')) }}
-{{ Form::label('status_open', 'Open') }}
-{{ Form::radio('status', 'reviewing', $category->status == 'reviewing', array('id'=>'status_reviewing')) }}
-{{ Form::label('status_reviewing', 'Reviewing') }}
-{{ Form::radio('status', 'finalizing', $category->status == 'finalizing', array('id'=>'status_finalizing')) }}
-{{ Form::label('status_finalizing', 'Finalizing') }}
-{{ Form::radio('status', 'final', $category->status == 'final', array('id'=>'status_final')) }}
-{{ Form::label('status_final', 'Final') }}
-<br>
-{{ Form::submit('Save') }}
-{{ Form::reset('Reset') }}
-{{ Form::close() }}
+    {{ Form::open(array('action'=>array('ChairCon@saveCategoryStatus', $category->id))) }}
+    {{ Form::radio('status', 'closed', $category->status == 'closed', array('id'=>'status_closed')) }}
+    {{ Form::label('status_closed', 'Closed') }}
+    {{ Form::radio('status', 'open', $category->status == 'open', array('id'=>'status_open')) }}
+    {{ Form::label('status_open', 'Open') }}
+    {{ Form::radio('status', 'reviewing', $category->status == 'reviewing', array('id'=>'status_reviewing')) }}
+    {{ Form::label('status_reviewing', 'Reviewing') }}
+    {{ Form::radio('status', 'finalizing', $category->status == 'finalizing', array('id'=>'status_finalizing')) }}
+    {{ Form::label('status_finalizing', 'Finalizing') }}
+    {{ Form::radio('status', 'final', $category->status == 'final', array('id'=>'status_final')) }}
+    {{ Form::label('status_final', 'Final') }}
+    <br>
+    {{ Form::submit('Save') }}
+    {{ Form::reset('Reset') }}
+    {{ Form::close() }}
 </div>
 
 
@@ -90,7 +90,7 @@
     </tbody>
 </table>
 
-<h4>Other Enforced Policies</h4>
+<h3>Other Enforced Policies</h3>
 <ul>
     <li>
         Authors can only access materials related to their own submissions.
@@ -127,65 +127,112 @@
 </ul>
 
 
-<h3>Chairs</h3>
-<ul>
-    @foreach($category->chairs as $chair)
-    <li>
-        {{ $chair->email }}
-        {{ link_to_action('ChairCon@removeCategoryChair', 'Remove', array($category->id, $chair->id)) }}
-    </li>
-    @endforeach
-</ul>
-
+<h2>Chairs</h2>
 <div class="panel">
-{{ Form::open(array('action'=>array('ChairCon@addCategoryChair', $category->id))) }}
-{{ Form::label('chair', 'Add chair by email') }}
-{{ Form::text('chair') }}
-{{ Form::submit('Add', array('class'=>'inline')) }}
-{{ Form::close() }}
+    <table>
+        <thead>
+            <tr>
+                <th width="80">ID</th>
+                <th>Email</th>
+                <th>Controls</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($category->chairs as $chair) <tr>
+                    <td>{{ $chair->id }}</td>
+                    <td>{{{ $chair->email }}}</td>
+                    <td>{{ link_to_action('ChairCon@removeCategoryChair', 'Remove',
+                        array($category->id, $chair->id)) }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+    
+    {{ Form::open(array('action'=>array('ChairCon@addCategoryChair', $category->id))) }}
+    {{ Form::label('chair', 'Add chair by email') }}
+    {{ Form::text('chair') }}
+    {{ Form::submit('Add', array('class'=>'inline')) }}
+    {{ Form::close() }}
 </div>
 
 
-<h3>Keywords</h3>
+<h2>Keywords</h2>
 
-    <div class="columns small-12 panel">
-        <p>Select the keywords that will be used for this category.</p>
-        {{ Form::open(array('action'=>array('ChairCon@saveCategoryKeywords', $category->id))) }}
-        @foreach(Keyword::all() as $keyword)
-        <div>
-            {{ Form::checkbox(
-                "keywords[{$keyword->id}]",
-                $keyword->id,
-                $category->keywords()->get()->contains($keyword->id),
-                array('id'=>"keywords[{$keyword->id}]")) }}
-            {{ Form::label("keywords[{$keyword->id}]", $keyword->keyword) }}
-        </div>
-        @endforeach
-        {{ Form::submit('Save') }}
-        {{ Form::close() }}
+<div class="columns small-12 panel">
+    <p>Select the keywords that will be used for this category.</p>
+    {{ Form::open(array('action'=>array('ChairCon@saveCategoryKeywords', $category->id))) }}
+    @foreach(Keyword::all() as $keyword)
+    <div>
+        {{ Form::checkbox(
+            "keywords[{$keyword->id}]",
+            $keyword->id,
+            $category->keywords()->get()->contains($keyword->id),
+            array('id'=>"keywords[{$keyword->id}]")) }}
+        {{ Form::label("keywords[{$keyword->id}]", $keyword->keyword) }}
     </div>
+    @endforeach
+    {{ Form::submit('Save') }}
+    {{ Form::close() }}
+</div>
 
-    <div class="columns small-12 panel">
-        {{ Form::open(array('action'=>array('ChairCon@createCategoryKeyword', $category->id))) }}
-        {{ Form::label('keyword', 'Add new keyword') }}
-        {{ Form::text('keyword') }}
-        {{ Form::submit('add') }}
-        {{ Form::close() }}
-    </div>
+<div class="columns small-12 panel">
+    {{ Form::open(array('action'=>array('ChairCon@createCategoryKeyword', $category->id))) }}
+    {{ Form::label('keyword', 'Add new keyword') }}
+    {{ Form::text('keyword') }}
+    {{ Form::submit('add') }}
+    {{ Form::close() }}
+</div>
 
 
-<h3>Files</h3>
+<h2>Files</h2>
 
-    <ul>
-        @foreach($category->documents as $document)
-        <li>
-            {{ link_to_action('DocumentCon@download', e($document->name), array($category->id)) }}
-            {{ link_to_route('delete.document', 'Delete', array($document->id), array('onclick'=>'return confirm("Delete '.$document->name.'?")')) }}
-        </li>
-        @endforeach
-    </ul>
+<p>
+    Upload files you want authors and reviewers to have. Use meaningful
+    filenames. For example:
+</p>
 
-    <div class="columns small-12 panel">
+<ul>
+    <li>Author Instructions and Template.docx</li>
+    <li>Reviewer Instructions and Template.docx</li>
+    <li>Papers Description.docx</li>
+</ul>
+
+<div class="columns small-12 panel">
+    <table>
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($category->documents as $document)
+            <tr>
+                <td>
+                    {{
+                        link_to_action(
+                            'DocumentCon@download',
+                            e($document->name),
+                            array($category->id)
+                        )
+                    }}
+                </td>
+                <td>
+                    {{
+                        link_to_route(
+                            'delete.document',
+                            'Delete',
+                            array($document->id),
+                            array('onclick'=>
+                            'return confirm("Delete '.$document->name.'?")')
+                        )
+                    }}
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
     {{ Form::open(array('action'=>'DocumentCon@upload', 'files'=>true)) }}
     {{ Form::hidden('container_id', $category->id) }}
     {{ Form::hidden('container_type', 'Category') }}
@@ -193,81 +240,186 @@
     {{ Form::file('document') }}
     {{ Form::submit('Upload') }}
     {{ Form::close() }}
-    </div>
+</div>
 
 
-<h3>Submissions</h3>
-<ul>
-    @foreach($category->submissions as $submission)
-    <li>{{{ $submission->title }}}</li>
-    @endforeach
-</ul>
-
-
-<h3>Reviewers</h3>
-<ul>
-    @foreach($category->reviewers as $reviewer)
-    <li>{{{ $reviewer->email }}}</li>
-    @endforeach
-</ul>
-
-
-<h3>Assign Submissions to Reviewers</h3>
-
-<ul>
-    <li>The column numbers are the reviewers' IDs. Hover over them for more
-    details.</li>
-    <li>The row numbers are the submissions' IDs. Hover over them for more
-    details.</li>
-    <li>The numbers in the cells are the number of keywords that match between
-    the corresponding submission and reviewer. Hover over them to see which
-    keywords matched.</li>
-</ul>
-
-<div class="panel">
-{{ Form::open(array('action' => 'ChairCon@postAssignments')) }}
-{{ Form::hidden('category_id', $category->id) }}
+<h2>Reviewers</h2>
 <table>
     <thead>
         <tr>
-            <td>Submissiosn</td>
-            <th colspan="{{$category->reviewers->count()}}">Reviewers</th>
-        </tr>
-        <tr>
-            <td></td>
-            @foreach($category->reviewers as $reviewer)
-            <td title="{{{$reviewer->email}}}">{{$reviewer->id}}</td>
-            @endforeach
+            <th width="80">ID</th>
+            <th>Email</th>
         </tr>
     </thead>
-    @foreach($category->submissions as $submission)
-    <tr>
-        <td title="{{{$submission->title}}} - {{{$submission->user->email}}}">{{$submission->id}}</td>
+    <tbody>
         @foreach($category->reviewers as $reviewer)
-        <td>
-            <input type="checkbox"
-                name="assignments[{{$submission->id}}][{{$reviewer->id}}]"
-                value="1"
-                {{ Review::whereNull('deleted_at')
-                    ->where('submission_id', $submission->id)
-                    ->where('user_id', $reviewer->id)->exists()
-                        ? 'checked="checked"'
-                        : ''}} >
-                        <span title="{{{ print_r(array_intersect(
-                            $submission->keywords()->lists('keyword'),
-                            $reviewer->keywords()->lists('keyword')), true)
-                            }}}">
-                        {{ count(array_intersect(
-                            $submission->keywords()->lists('keyword'),
-                            $reviewer->keywords()->lists('keyword'))) }}
-                        </span>
-                    
-                    </td>
+            <tr>
+                <td>{{ $reviewer->id }}</td>
+                <td>{{{ $reviewer->email }}}</td>
+            </tr>
         @endforeach
-    </tr>
-    @endforeach
+    </tbody>
 </table>
-{{Form::submit('Save')}}
-{{Form::close()}}
+
+
+<h2>Submission</h2>
+@foreach($category->submissions as $submission)
+    <h3>&#35;{{ $submission->id }}: {{{ $submission->title }}}<br>{{{
+        $submission->user->email }}}</h3>
+    <h4>Submission Files</h4>
+        <table>
+            <tr>
+                <th width="60">
+                    ID
+                </th>
+                <th>
+                    Author
+                </th>
+                <th>
+                    File
+                </th>
+                <th width="150">
+                    Downloaded<br>by you
+                </th>
+                <th width="150">
+                    For Reviewers
+                </th>
+            </tr>
+            @foreach($submission->documents as $document)
+                <tr>
+                    <td>
+                        {{ $document->id }}
+                    </td>
+                    <td>
+                        {{{ $submission->user->email }}}
+                    </td>
+                    <td>
+                        {{ link_to_route('download', $document->name, array($document->id)) }}
+                    </td>
+                    <td>
+                        {{ $user->has_downloaded($document) ? 'yes' : 'NO' }}
+                    </td>
+                    <td>
+                        {{ Form::checkbox('for_reviewer') }}
+                    </td>
+                </tr>
+            @endforeach
+        </table>
+    
+    
+    <h4>Assigned Reviewers</h4>
+    @foreach($submission->reviews as $review)
+        <h5>{{{ User::find($review->user_id)->email }}}</h5>
+        
+        <table>
+            <tr>
+                <th width="60">
+                    ID
+                </th>
+                <th>Reviewer</th>
+                <th>
+                    File
+                </th>
+                <th width="150">
+                    Downloaded<br>by you
+                </th>
+                <th width="150">
+                    For Authors
+                </th>
+            </tr>
+            @forelse($review->documents as $document)
+                <tr>
+                    <td>
+                        {{ $document->id }}
+                    </td>
+                    <td>
+                        {{{ User::find($review->user_id)->email }}}
+                    </td>
+                    <td>
+                        {{ link_to_route('download', e($document->name),
+                        array($document->id)) }}
+                    </td>
+                    <td>
+                        {{ $user->has_downloaded($document) ? 'yes' : 'NO' }}
+                    </td>
+                    <td>
+                        {{ Form::checkbox('for_authors') }}
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td></td>
+                    <td>{{{ User::find($review->user_id)->email }}}</td>
+                    <td colspan="3">NO REVIEW SUBMITTED</td>
+                </tr>
+            @endforelse
+        </table>
+    @endforeach
+@endforeach
+
+
+<h2>Assign Submissions to Reviewers</h2>
+
+<ul>
+    <li>Column numbers are reviewer IDs.</li>
+    <li>Row numbers are submission IDs.</li>
+    <li>
+        Numbers in cells are the number of keywords that the reviewer and
+        submission share.
+    </li>
+    <li>Hover over numbers for more details.</li>
+</ul>
+
+<div class="panel">
+    {{ Form::open(array('action' => 'ChairCon@postAssignments')) }}
+        {{ Form::hidden('category_id', $category->id) }}
+        <table>
+            <thead>
+                <tr>
+                    <td>Submissiosn</td>
+                    <th colspan="{{$category->reviewers->count()}}">Reviewers</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    @foreach($category->reviewers as $reviewer)
+                    <td title="{{{$reviewer->email}}}">{{$reviewer->id}}</td>
+                    @endforeach
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($category->submissions as $submission)
+                    <tr>
+                        <td title="{{{$submission->user->email}}}: {{{$submission->title}}}">
+                            {{$submission->id}}
+                        </td>
+                        @foreach($category->reviewers as $reviewer)
+                            <td>
+                                <input type="checkbox"
+                                    name="assignments[{{$submission->id}}][{{$reviewer->id}}]"
+                                    value="1"
+                                    {{ Review::whereNull('deleted_at')
+                                        ->where('submission_id', $submission->id)
+                                        ->where('user_id', $reviewer->id)->exists()
+                                            ? 'checked="checked"'
+                                            : ''}}
+                                >
+                                <span title="{{{ print_r(array_intersect(
+                                    $submission->keywords()->lists('keyword'),
+                                    $reviewer->keywords()->lists('keyword')), true)
+                                    }}}">
+                                    {{ count(array_intersect(
+                                        $submission->keywords()->lists('keyword'),
+                                        $reviewer->keywords()->lists('keyword'))) }}
+                                </span>
+                            </td>
+                        @endforeach
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        {{Form::submit('Save')}}
+    {{Form::close()}}
 </div>
+
+
 @stop
