@@ -262,100 +262,112 @@
 </table>
 
 
-<h2>Submission</h2>
-@foreach($category->submissions as $submission)
-    <h3>&#35;{{ $submission->id }}: {{{ $submission->title }}}<br>{{{
-        $submission->user->email }}}</h3>
-    <h4>Submission Files</h4>
-        <table>
-            <tr>
-                <th width="60">
-                    ID
-                </th>
-                <th>
-                    Author
-                </th>
-                <th>
-                    File
-                </th>
-                <th width="150">
-                    Downloaded<br>by you
-                </th>
-                <th width="150">
-                    For Reviewers
-                </th>
-            </tr>
-            @foreach($submission->documents as $document)
+<h2>Submission and Review Access</h2>
+        <p>Mark files "for reviewers" to make said files available to reviewers.
+        Similarly, mark files "for authors" to make said files available to
+        authors. Please note that the status of the category and submission can
+        still prevent access to a file.</p>
+<div class="panel">
+    {{ Form::open(array('route'=>array('save.access'))) }}
+    @foreach($category->submissions as $submission)
+        <h3>&#35;{{ $submission->id }}: {{{ $submission->title }}}<br>
+            {{{ $submission->user->email }}}</h3>
+            <h4>Submission Files</h4>
+            <table>
                 <tr>
-                    <td>
-                        {{ $document->id }}
-                    </td>
-                    <td>
-                        {{{ $submission->user->email }}}
-                    </td>
-                    <td>
-                        {{ link_to_route('download', $document->name, array($document->id)) }}
-                    </td>
-                    <td>
-                        {{ $user->has_downloaded($document) ? 'yes' : 'NO' }}
-                    </td>
-                    <td>
-                        {{ Form::checkbox('for_reviewer') }}
-                    </td>
+                    <th width="60">
+                        ID
+                    </th>
+                    <th>
+                        Author
+                    </th>
+                    <th>
+                        File
+                    </th>
+                    <th width="150">
+                        Downloaded<br>by you
+                    </th>
+                    <th width="150">
+                        For Reviewers
+                    </th>
                 </tr>
-            @endforeach
-        </table>
-    
-    
-    <h4>Assigned Reviewers</h4>
-    @foreach($submission->reviews as $review)
-        <h5>{{{ User::find($review->user_id)->email }}}</h5>
+                @foreach($submission->documents as $document)
+                    <tr>
+                        <td>
+                            {{ $document->id }}
+                        </td>
+                        <td>
+                            {{{ $submission->user->email }}}
+                        </td>
+                        <td>
+                            {{ link_to_route('download', $document->name, array($document->id)) }}
+                        </td>
+                        <td>
+                            {{ $user->has_downloaded($document) ? 'yes' : 'NO' }}
+                        </td>
+                        <td>
+                            {{ Form::hidden("for_reviewers[{$document->id}]", '0') }}
+                            {{ Form::checkbox("for_reviewers[{$document->id}]", '1', $document->is_for_reviewers) }}
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
         
-        <table>
-            <tr>
-                <th width="60">
-                    ID
-                </th>
-                <th>Reviewer</th>
-                <th>
-                    File
-                </th>
-                <th width="150">
-                    Downloaded<br>by you
-                </th>
-                <th width="150">
-                    For Authors
-                </th>
-            </tr>
-            @forelse($review->documents as $document)
-                <tr>
-                    <td>
-                        {{ $document->id }}
-                    </td>
-                    <td>
-                        {{{ User::find($review->user_id)->email }}}
-                    </td>
-                    <td>
-                        {{ link_to_route('download', e($document->name),
-                        array($document->id)) }}
-                    </td>
-                    <td>
-                        {{ $user->has_downloaded($document) ? 'yes' : 'NO' }}
-                    </td>
-                    <td>
-                        {{ Form::checkbox('for_authors') }}
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td></td>
-                    <td>{{{ User::find($review->user_id)->email }}}</td>
-                    <td colspan="3">NO REVIEW SUBMITTED</td>
-                </tr>
-            @endforelse
-        </table>
+        
+        <h4>Assigned Reviewers</h4>
+        @forelse($submission->reviews as $review)
+            <h5>{{{ $review->reviewer->email }}}</h5>
+                <table>
+                    <tr>
+                        <th width="60">
+                            ID
+                        </th>
+                        <th>Reviewer</th>
+                        <th>
+                            File
+                        </th>
+                        <th width="150">
+                            Downloaded<br>by you
+                        </th>
+                        <th width="150">
+                            For Authors
+                        </th>
+                    </tr>
+                    @forelse($review->documents as $document)
+                        <tr>
+                            <td>
+                                {{ $document->id }}
+                            </td>
+                            <td>
+                                {{{ $review->reviewer->email }}}
+                            </td>
+                            <td>
+                                {{ link_to_route('download', e($document->name),
+                                array($document->id)) }}
+                            </td>
+                            <td>
+                                {{ $user->has_downloaded($document) ? 'yes' : 'NO' }}
+                            </td>
+                            <td>
+                                {{ Form::hidden("for_authors[{$document->id}]", '0') }}
+                                {{ Form::checkbox("for_authors[{$document->id}]", '1', $document->is_for_authors) }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td></td>
+                            <td>{{{ $review->reviewer->email }}}</td>
+                            <td colspan="3">NO REVIEW SUBMITTED</td>
+                        </tr>
+                    @endforelse
+                </table>
+        @empty
+            <p>No reviewers have been assigned.</p>
+        @endforelse
     @endforeach
-@endforeach
+    {{ Form::submit('Save') }}
+    {{ Form::close() }}
+</div>
 
 
 <h2>Assign Submissions to Reviewers</h2>
@@ -372,52 +384,52 @@
 
 <div class="panel">
     {{ Form::open(array('action' => 'ChairCon@postAssignments')) }}
-        {{ Form::hidden('category_id', $category->id) }}
-        <table>
-            <thead>
+    {{ Form::hidden('category_id', $category->id) }}
+    <table>
+        <thead>
+            <tr>
+                <td>Submissiosn</td>
+                <th colspan="{{$category->reviewers->count()}}">Reviewers</th>
+            </tr>
+            <tr>
+                <td></td>
+                @foreach($category->reviewers as $reviewer)
+                <td title="{{{$reviewer->email}}}">{{$reviewer->id}}</td>
+                @endforeach
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($category->submissions as $submission)
                 <tr>
-                    <td>Submissiosn</td>
-                    <th colspan="{{$category->reviewers->count()}}">Reviewers</th>
-                </tr>
-                <tr>
-                    <td></td>
+                    <td title="{{{$submission->user->email}}}: {{{$submission->title}}}">
+                        {{$submission->id}}
+                    </td>
                     @foreach($category->reviewers as $reviewer)
-                    <td title="{{{$reviewer->email}}}">{{$reviewer->id}}</td>
+                        <td>
+                            <input type="checkbox"
+                                name="assignments[{{$submission->id}}][{{$reviewer->id}}]"
+                                value="1"
+                                {{ Review::whereNull('deleted_at')
+                                    ->where('submission_id', $submission->id)
+                                    ->where('user_id', $reviewer->id)->exists()
+                                        ? 'checked="checked"'
+                                        : ''}}
+                            >
+                            <span title="{{{ print_r(array_intersect(
+                                $submission->keywords()->lists('keyword'),
+                                $reviewer->keywords()->lists('keyword')), true)
+                                }}}">
+                                {{ count(array_intersect(
+                                    $submission->keywords()->lists('keyword'),
+                                    $reviewer->keywords()->lists('keyword'))) }}
+                            </span>
+                        </td>
                     @endforeach
                 </tr>
-            </thead>
-            <tbody>
-                @foreach($category->submissions as $submission)
-                    <tr>
-                        <td title="{{{$submission->user->email}}}: {{{$submission->title}}}">
-                            {{$submission->id}}
-                        </td>
-                        @foreach($category->reviewers as $reviewer)
-                            <td>
-                                <input type="checkbox"
-                                    name="assignments[{{$submission->id}}][{{$reviewer->id}}]"
-                                    value="1"
-                                    {{ Review::whereNull('deleted_at')
-                                        ->where('submission_id', $submission->id)
-                                        ->where('user_id', $reviewer->id)->exists()
-                                            ? 'checked="checked"'
-                                            : ''}}
-                                >
-                                <span title="{{{ print_r(array_intersect(
-                                    $submission->keywords()->lists('keyword'),
-                                    $reviewer->keywords()->lists('keyword')), true)
-                                    }}}">
-                                    {{ count(array_intersect(
-                                        $submission->keywords()->lists('keyword'),
-                                        $reviewer->keywords()->lists('keyword'))) }}
-                                </span>
-                            </td>
-                        @endforeach
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        {{Form::submit('Save')}}
+            @endforeach
+        </tbody>
+    </table>
+    {{Form::submit('Save')}}
     {{Form::close()}}
 </div>
 

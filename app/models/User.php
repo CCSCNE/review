@@ -51,7 +51,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     }
 
     public function submissionsReviewing() {
-        return $this->hasManyThrough('Submission', 'Review', 'user_id', 'id');
+        return $this->belongsToMany('Submission', 'reviews');
+        #return $this->hasManyThrough('Submission', 'Review', 'user_id', 'id');
     }
 
     public function reviews() {
@@ -119,19 +120,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     {
         $container = $document->container;
 
-        $category = null;
-        if ($container instanceof Submission)
-        {
-            $category = $container->category;
-        }
-        else if ($container instanceof Category)
-        {
-            $category = $container;
-        }
-        else if ($container instanceof Review)
-        {
-            $category = $container->submission->category;
-        }
+        $category = $document->getCategory();
 
         $can_delete = false;
         if ($this->is_chair_of($category))
@@ -200,9 +189,78 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         return $can_upload;
     }
 
+    public function can_download(Document $document)
+    {
+        $container = $document->container;
+
+        if ($container instanceof Submission)
+        {
+            $submission = $container;
+            $category = $submission->category;
+            $can_download = false;
+
+            if ($this->is_chair_of($category))
+            {
+                $can_download = true;
+            }
+            else if ($this->is_author_of($submission))
+            {
+                $can_download = true;
+            }
+            else if ($this->is_reviewer_of($submission))
+            {
+                if ($document->is_for_reviewers)
+                {
+
+                    if ($submission->is_status_effectively(array('reviewing', 'finalizing', 'final')))
+                    {
+                        $can_download = true;
+                    }
+
+                }
+            }
+        }
+        elseif ($container instanceof Category)
+        {
+            $category = $container;
+            $can_download = true;
+        }
+        elseif ($container instanceof Review)
+        {
+            $review = $container;
+            $submission = $review->submission;
+            $category = $submission->category;
+            if ($this->is_chair_of($category))
+            {
+                $can_download = true;
+            }
+            else if ($this->is_owner_of($review))
+            {
+                $can_download = true;
+            }
+            else if ($this->is_author_of($submission))
+            {
+                if ($submission->is_for_authors)
+                {
+                    if ($submission->is_status_effectively('finalizing', 'final'))
+                    {
+                        $can_download = true;
+                    }
+                }
+            }
+        }
+        return $can_download;
+    }
 
     public function is_a_chair()
     {
         return !$this->categoriesChairing->isEmpty();
+    }
+
+
+    public function can_save_access_to(Document $document)
+    {
+        $category = $document->getCategory();
+        return $this->is_chair_of($category);
     }
 }

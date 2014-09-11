@@ -13,4 +13,21 @@ class Document extends Eloquent {
     public function usersDownloaded() {
         return $this->belongsToMany('User', 'downloads')->withTimestamps();
     }
+
+    public function getCategory() {
+        $category = null;
+        if ($this->container instanceof Submission)
+        {
+            $category = $this->container->category;
+        }
+        else if ($this->container instanceof Category)
+        {
+            $category = $this->container;
+        }
+        else if ($this->container instanceof Review)
+        {
+            $category = $this->container->submission->category;
+        }
+        return $category;
+    }
 }

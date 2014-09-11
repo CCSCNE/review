@@ -6,7 +6,7 @@ class Review extends Eloquent {
     protected $dates = ['deleted_at'];
 
     public function reviewer() {
-        return $this->belongsTo('User');
+        return $this->belongsTo('User', 'user_id');
     }
 
     public function submission() {

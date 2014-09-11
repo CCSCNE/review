@@ -80,68 +80,9 @@ class DocumentCon extends \BaseController {
     public function download($document_id)
     {
         $user = Auth::user();
-        $document = Document::find($document_id);
+        $document = Document::findOrFail($document_id);
 
-        $container = $document->container;
-
-        if ($container instanceof Submission)
-        {
-            $submission = $container;
-            $category = $submission->category;
-            $can_download = false;
-
-            if ($user->is_chair_of($category))
-            {
-                $can_download = true;
-            }
-            else if ($user->is_author_of($submission))
-            {
-                $can_download = true;
-            }
-            else if ($user->is_reviewer_of($submission))
-            {
-                if ($document->is_for_reviewers)
-                {
-
-                    if ($submission->is_status_effectively(array('reviewing', 'finalizing', 'final')))
-                    {
-                        $can_download = true;
-                    }
-
-                }
-            }
-        }
-        elseif ($container instanceof Category)
-        {
-            $category = $container;
-            $can_download = true;
-        }
-        elseif ($container instanceof Review)
-        {
-            $review = $container;
-            $submission = $review->submission;
-            $category = $submission->category;
-            if ($user->is_chair_of($category))
-            {
-                $can_download = true;
-            }
-            else if ($user->is_owner_of($review))
-            {
-                $can_download = true;
-            }
-            else if ($user->is_author_of($submission))
-            {
-                if ($submission->is_for_authors)
-                {
-                    if ($submission->is_status_effectively('finalizing', 'final'))
-                    {
-                        $can_download = true;
-                    }
-                }
-            }
-        }
-
-        if ($can_download)
+        if ($user->can_download($document))
         {
             $document->usersDownloaded()->attach($user->id);
             return Response::download('uploads/'.$document->saved_name, $document->name);
@@ -220,4 +161,37 @@ class DocumentCon extends \BaseController {
         $document->save();
     }
 
+
+    public function saveAccess()
+    {
+        $user = Auth::user();
+        
+        $for_reviewers = Input::get('for_reviewers');
+        $for_authors = Input::get('for_authors');
+
+        $doc_ids = array_keys($for_reviewers) + array_keys($for_authors);
+        foreach($doc_ids as $id)
+        {
+            if (!$user->can_save_access_to(Document::findOrFail($id)))
+            {
+                App::abort(403, "You are not a chair.");
+            }
+        }
+
+        foreach ($for_reviewers as $id => $value)
+        {
+            $document = Document::findOrFail($id);
+            $document->is_for_reviewers = $value;
+            $document->save();
+        }
+
+        foreach ($for_authors as $id => $value)
+        {
+            $document = Document::findOrFail($id);
+            $document->is_for_authors = $value;
+            $document->save();
+        }
+
+        return Redirect::to(Session::get('previous'));
+    }
 }

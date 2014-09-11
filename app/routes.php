@@ -34,6 +34,8 @@ Route::get('document/{document}',
 Route::post('document/upload', array('as'=>'upload', 'uses'=>'DocumentCon@upload'));
 Route::get('document/{document}/delete',
     array('as'=>'delete.document', 'uses'=>'DocumentCon@deleteDocument'));
+Route::post('document/save_access',
+    array('as'=>'save.access', 'uses'=>'DocumentCon@saveAccess'));
 
 
 Route::get('author',

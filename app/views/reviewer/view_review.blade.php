@@ -35,9 +35,11 @@ Status: {{ $review->submission->getEffectiveStatus() }}
 <p>Please review each submission file.</p>
 <ul>
     @foreach($review->submission->documents as $document)
-    <li>
-        {{link_to_action('DocumentCon@download', e($document->name), array($document->id))}}
-    </li>
+        @if($user->can_download($document))
+            <li>
+                {{link_to_action('DocumentCon@download', e($document->name), array($document->id))}}
+            </li>
+        @endif
     @endforeach
 </ul>
 
