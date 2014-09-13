@@ -13,7 +13,7 @@ Copyright (C) 2014 "Stoney" Herman Lee Jackson II \<dr.stoney@gmail.com\>
 ### Requirements to run
 
 * PHP 5.6+
-* MySQL 5.6+
+* MySQL 5.6+ or Sqlite3
 * Apache 2.2+
 
 Version numbers represent the least version on which Review has been tested.
