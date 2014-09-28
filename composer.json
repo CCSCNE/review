@@ -9,7 +9,8 @@
 		"davejamesmiller/laravel-breadcrumbs": "~2.2.2"
 	},
         "require-dev": {
-                "fzaninotto/faker": "1.4.*"
+                "fzaninotto/faker": "1.4.*",
+                "codeception/codeception": "*"
         },
 	"autoload": {
 		"classmap": [
