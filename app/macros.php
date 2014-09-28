@@ -19,3 +19,20 @@ Form::macro('error', function($field_name){
 
     return implode("", $html);
 });
+
+
+Form::macro('textWidget', function($fieldName, $type='text', $withValue=True)
+{
+    $html = [];
+    $html[] = Form::label($fieldName);
+    if ($withValue)
+    {
+        $html[] = Form::$type($fieldName, Input::old($fieldName));
+    }
+    else
+    {
+        $html[] = Form::$type($fieldName);
+    }
+    $html[] = Form::error($fieldName);
+    return implode("", $html);
+});
