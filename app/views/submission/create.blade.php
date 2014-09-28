@@ -6,9 +6,7 @@
 
 @section('content')
 {{ Form::open(array_merge($action, array('files'=>true))) }}
-{{ Form::label('title') }}
-{{ Form::text('title') }}
-{{ Form::error('title') }}
+{{ Form::textWidget('title') }}
 {{ Form::hidden('user_id', $user->id) }}
 {{ Form::hidden('category_id', $category->id) }}
 {{ Form::label('keywords') }}
